@@ -1,16 +1,35 @@
-#wrapper {
-  width: 50%;
+body {
+    font-family: 'Arvo';
+    font-weight:100;
 }
-.fielddiagram {
-  max-width: 100%;
-  max-height: 100%;
-}
+
 form {
-  font-size: 18px;
+    font-size: 18px;
 }
-.subtext{
-  font-size: 14px;
+
+#wrapper {
+    width: 50%;
 }
+
+.fielddiagram {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.subtext {
+    font-size: 14px;
+}
+
 .header {
-  font-size: 24px;
+    font-size: 24px;
+}
+.question{
+  text-decoration: underline;
+  font-weight: normal;
+  padding-top: 1%;
+  display: inline-block;
+}
+.lineAnswer {
+  text-decoration: none;
+  padding-top: 0%;
 }
