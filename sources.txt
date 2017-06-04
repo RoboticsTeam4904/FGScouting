@@ -1,0 +1,3 @@
+Help Taken From
+- https://stackoverflow.com/questions/3029422/how-do-i-auto-resize-an-image-to-fit-a-div-container
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/em
