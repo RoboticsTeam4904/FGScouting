@@ -8,8 +8,12 @@ data[0] = prompt("New member name?");
 function saveN(data, name) {
 	localStorage.setItem(name, JSON.stringify(data));
 }
-function save(data) {
+function getData(){
+	return data;
+}
+function save() {
 	var name = dataName + counter.toString();
+	data = getData();
 	saveN(data, name);
 	counter++;
 }
