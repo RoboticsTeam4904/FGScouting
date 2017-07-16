@@ -1,8 +1,6 @@
 var data = [];
 var counter = 1;
 var dataName = "form";
-// Get data. Example:
-data[0] = prompt("New member name?");
 // This should be changed to retrieve data from the form
 
 function saveN(data, name) {
@@ -13,6 +11,7 @@ function getData(){
 }
 function save() {
 	var name = dataName + counter.toString();
+	retrieveData();
 	data = getData();
 	saveN(data, name);
 	counter++;
@@ -23,6 +22,19 @@ function get(data, name) {
 	return JSON.parse(localStorage.getItem(name));
 }
 // Run on initialization?
-
-
-//
+function retrieveData() {
+	var formElements = document.getElementsByTagName("input");
+	j = 0;
+	for(i = 0; i < formElements.length; i++){
+		if(formElements[i].getAttribute('class') == "dynamic"){
+			data[j] = formElements[i].value;
+			j++;
+		}else if(formElements[i].checked){
+			data[j] = formElements[i].value;
+			j++;
+		}
+	}
+	for(i = 0; i < data.length; i++){
+		console.log(data[i]);
+	}
+}
