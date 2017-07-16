@@ -24,12 +24,13 @@
             <input type="radio" name="presence" value="yes"> Yes
             </br>
             </br>
-            <!--Auton-->
+            <!-- AUTONOMOUS -->
             <strong class="header">Auton</strong></br>
             <div id="wrapper">
                 <img src="./images/2017fielddiagram.png" alt="Field Diagram" class="fielddiagram" />
                 </br>
             </div>
+            <!-- Baseline Crossing -->
             <strong class="question">Baseline Crossing?</strong>
             </br>
             <input type="radio" name="baselineCrossing" value="still" checked> Does not move.
@@ -38,20 +39,24 @@
             </br>
             <input type="radio" name="baselineCrossing" value="crosses"> Crosses the Baseline.
             </br>
+            <!-- Auton Fuel Status -->
             <strong class="question">Shoots Fuel?</strong>
             </br>
             <input type="radio" name="autonFuelStatus" value="no" checked> No
             </br>
             <input type="radio" name="autonFuelStatus" value="yes"> Yes
             </br>
+            <!-- Auton High Goals -->
             <strong class="question">Number of High Goals Scored:</strong><input class="dynamic" type="number" name="autonHighGoals" />
             </br>
             <em class="subtext">Amount of fuel scored in the boiler, not the amount of points scored from shooting. Estimate based on the boiler count on the scoreboard.</em>
             </br>
+            <!-- Auton Low Goals -->
             <strong class="question">Number of Low Goals Scored:</strong><input class="dynamic" type="number" name="autonLowGoals" />
             </br>
             <em class="subtext">The TOTAL number of points SCORED by balls being put into low goal NOT total number of balls (fuel).</em>
             </br>
+            <!-- Auton Gears -->
             <strong class="question">Auton Gears:</strong>
             </br>
             <input type="radio" name="autonGears" value="fail" checked> Tries to score, but fails.
