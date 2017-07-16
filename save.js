@@ -3,12 +3,17 @@ var counter = 1;
 var dataName = "form";
 // This should be changed to retrieve data from the form
 
+//Saves Data to Local Storage
 function saveN(data, name) {
 	localStorage.setItem(name, JSON.stringify(data));
 }
+
+//Returns the currently stored data
 function getData(){
 	return data;
 }
+
+//Saves the latest form to localstorage
 function save() {
 	var name = dataName + counter.toString();
 	retrieveData();
@@ -16,11 +21,13 @@ function save() {
 	saveN(data, name);
 	counter++;
 }
+
 // Retrieving localstorage: Set up with a button on the webpage? automatic? Run on initialization?
 function get(data, name) {
 	return JSON.parse(localStorage.getItem(data + name));
 }
-// Function to retrieve the current form data
+
+// Retrieves locally stored data
 function retrieveData() {
 	var formElements = document.getElementsByTagName("input");
 	j = 0;
@@ -35,6 +42,7 @@ function retrieveData() {
 	}
 }
 
+//Pushes locally stored data to the database
 function pushLocalStorage(){
-	//Connection to Database
+	//Connection to Database?
 }
