@@ -16,10 +16,9 @@ function save() {
 	saveN(data, name);
 	counter++;
 }
-// Set up with a button on the webpage? automatic? Run on initialization?
-
+// Retrieving localstorage: Set up with a button on the webpage? automatic? Run on initialization?
 function get(data, name) {
-	return JSON.parse(localStorage.getItem(name));
+	return JSON.parse(localStorage.getItem(data + name));
 }
 // Function to retrieve the current form data
 function retrieveData() {
@@ -34,4 +33,8 @@ function retrieveData() {
 			j++;
 		}
 	}
+}
+
+function pushLocalStorage(){
+	//Connection to Database
 }
