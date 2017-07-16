@@ -7,15 +7,15 @@
         <script type="text/javascript" src="save.js"></script>
     </head>
     <body>
-        <form>
+        <form id="mainform">
      		<h2>Team 4904's 2017 Stand Scouting</h2>
             <!--Before Match-->
             <strong class="header">Before Match</strong></br>
-            <strong class="question lineAnswer">Name:</strong> <input type="text" name="name" />
+            <strong class="question lineAnswer">Name:</strong> <input class="dynamic" type="text" name="name" />
             </br>
-            <strong class="question lineAnswer">Team Number:</strong> <input type="number" name="teamNumber" />
+            <strong class="question lineAnswer">Team Number:</strong> <input class="dynamic" type="number" min="0" name="teamNumber" />
             </br>
-            <strong class="question lineAnswer">Match Number:</strong> <input type="number" name="matchNumber" />
+            <strong class="question lineAnswer">Match Number:</strong> <input class="dynamic" type="number" min="0" name="matchNumber" />
             </br>
             <strong class="question">Is their robot present?</strong>
             </br>
