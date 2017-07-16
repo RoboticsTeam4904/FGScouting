@@ -16,12 +16,12 @@ function save() {
 	saveN(data, name);
 	counter++;
 }
-// Set up with a button on the webpage? automatic?
+// Set up with a button on the webpage? automatic? Run on initialization?
 
 function get(data, name) {
 	return JSON.parse(localStorage.getItem(name));
 }
-// Run on initialization?
+// Function to retrieve the current form data
 function retrieveData() {
 	var formElements = document.getElementsByTagName("input");
 	j = 0;
@@ -33,8 +33,5 @@ function retrieveData() {
 			data[j] = formElements[i].value;
 			j++;
 		}
-	}
-	for(i = 0; i < data.length; i++){
-		console.log(data[i]);
 	}
 }
