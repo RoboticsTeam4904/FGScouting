@@ -1,8 +1,0 @@
-Help Taken From
-- https://stackoverflow.com/questions/3029422/how-do-i-auto-resize-an-image-to-fit-a-div-container
-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/em
-- https://stackoverflow.com/questions/14676613/how-to-import-google-web-font-in-css-file
-- https://www.htmlvalidator.com/CSEForum/viewtopic.php?t=1505
-- https://fonts.google.com/specimen/Arvo
-- https://stackoverflow.com/questions/19978600/how-to-loop-through-elements-of-forms-with-javascript
-- https://stackoverflow.com/questions/19233415/how-to-make-type-number-to-positive-numbers-only
