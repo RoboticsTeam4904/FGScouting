@@ -39,6 +39,9 @@ $(document).ready(function() {
         saveN($("#mainform").serializeArray(), name);
         counter++;
     });
+    $("#clearForm").on('click', function(){
+      $("#mainform")[0].reset();
+    });
     $("#pushData").on('click', function() {
         for (var i = 1; i < counter; i++) {
             var data = JSON.parse(get('form', i));
