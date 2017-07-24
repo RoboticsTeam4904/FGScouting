@@ -39,10 +39,16 @@ $(document).ready(function() {
         saveN($("#mainform").serializeArray(), name);
         counter++;
     });
-    $("#clearForm").on('click', function(){
-      $("#mainform")[0].reset();
+    $("#clearForm").on('click', function() {
+        $("#mainform")[0].reset();
     });
     $("#pushData").on('click', function() {
+        pushData();
+        counter = 1;
+        localStorage.clear();
+    });
+    //Push All Data
+    function pushData() { //TODO: Check for connectivity before running.
         for (var i = 1; i < counter; i++) {
             var data = JSON.parse(get('form', i));
             var request = $.ajax({
@@ -57,7 +63,5 @@ $(document).ready(function() {
                 console.log(textStatus);
             });
         }
-				counter = 1;
-				localStorage.clear();
-    });
+    }
 });
