@@ -8,13 +8,8 @@ router.get('/', function(req, res) {
   });
 });
 router.post('/pushData', function(req, res, next) {
-  // console.log("posting");
   var db = req.db;
-  // console.log("posting");
   var usersHolder = db.get('users');
-  // console.log("posting");
-  // console.log("Inserting " + req.body);
-  // console.log("posting");
   usersHolder.insert(req.body, function (err, result) {
       if (err)
          res.send('Error');

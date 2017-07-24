@@ -1,4 +1,3 @@
-var data = [];
 var counter = 1;
 var dataName = "form";
 // This should be changed to retrieve data from the form
@@ -6,11 +5,6 @@ var dataName = "form";
 //Saves Data to Local Storage
 function saveN(data, name) {
     localStorage.setItem(name, JSON.stringify(compactJson(data)));
-}
-
-//Returns the currently stored data
-function getData() {
-    return data;
 }
 
 // Retrieving localstorage: Set up with a button on the webpage? automatic? Run on initialization?
@@ -35,7 +29,6 @@ function compactJson(json) {
             }
         }
     }
-    console.log(object);
     return object;
 }
 
@@ -48,7 +41,6 @@ $(document).ready(function() {
     });
     $("#pushData").on('click', function() {
         for (var i = 1; i < counter; i++) {
-					console.log(i);
             var data = JSON.parse(get('form', i));
             var request = $.ajax({
                 type: 'POST',
@@ -56,7 +48,7 @@ $(document).ready(function() {
                 data: data
             });
             request.done(function(response) {
-                console.log(response);
+                // console.log(response);
             });
             request.fail(function(jqXHR, textStatus) {
                 console.log(textStatus);
