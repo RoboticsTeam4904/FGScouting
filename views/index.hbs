@@ -1,0 +1,65 @@
+<script type="text/javascript" src="/js/save.js"></script>
+<link rel="stylesheet" href="/css/index.css"></link>
+<form id="mainform">
+    <h2>Team 4904's 2017 Stand Scouting</h2>
+    <!--Before Match-->
+    <strong class="header">Before Match</strong></br>
+    <strong class="question lineAnswer">Name:</strong> <input class="dynamic" type="text" name="username" />
+    </br>
+    <strong class="question lineAnswer">Team Number:</strong> <input class="dynamic" type="number" min="0" name="teamNumber" />
+    </br>
+    <strong class="question lineAnswer">Match Number:</strong> <input class="dynamic" type="number" min="0" name="matchNumber" />
+    </br>
+    <strong class="question">Is their robot present?</strong>
+    </br>
+    <input type="radio" name="presence" value="no" checked> No
+    </br>
+    <input type="radio" name="presence" value="yes"> Yes
+    </br>
+    </br>
+    <!-- AUTONOMOUS -->
+    <strong class="header">Auton</strong></br>
+    <div id="wrapper">
+        <img src="/images/2017fielddiagram.png" alt="Field Diagram" class="fielddiagram" />
+        </br>
+    </div>
+    <!-- Baseline Crossing -->
+    <strong class="question">Baseline Crossing?</strong>
+    </br>
+    <input type="radio" name="baselineCrossing" value="still" checked> Does not move.
+    </br>
+    <input type="radio" name="baselineCrossing" value="move"> Moves, doesn't cross baseline.
+    </br>
+    <input type="radio" name="baselineCrossing" value="crosses"> Crosses the Baseline.
+    </br>
+    <!-- Auton Fuel Status -->
+    <strong class="question">Shoots Fuel?</strong>
+    </br>
+    <input type="radio" name="autonFuelStatus" value="no" checked> No
+    </br>
+    <input type="radio" name="autonFuelStatus" value="yes"> Yes
+    </br>
+    <!-- Auton High Goals -->
+    <strong class="question">Number of High Goals Scored:</strong><input class="dynamic" type="number" name="autonHighGoals" />
+    </br>
+    <em class="subtext">Amount of fuel scored in the boiler, not the amount of points scored from shooting. Estimate based on the boiler count on the scoreboard.</em>
+    </br>
+    <!-- Auton Low Goals -->
+    <strong class="question">Number of Low Goals Scored:</strong><input class="dynamic" type="number" name="autonLowGoals" />
+    </br>
+    <em class="subtext">The TOTAL number of points SCORED by balls being put into low goal NOT total number of balls (fuel).</em>
+    </br>
+    <!-- Auton Gears -->
+    <strong class="question">Auton Gears:</strong>
+    </br>
+    <input type="radio" name="autonGears" value="fail" checked> Tries to score, but fails.
+    </br>
+    <input type="radio" name="autonGears" value="passiveGear"> Passively places gear, pilot lifts.
+    </br>
+    <input type="radio" name="autonGears" value="activeGear"> Actively places gear, pilot lifts.
+    </br>
+    <input type="radio" name="autonGears" value="doubleGear"> Places two gears.
+</form>
+<button type="button" id="saveButton">Save Form</button></br>
+<button type="button" id="clearForm">Reset Form</button></br>
+<button type="button" id="pushData">Push to the Cloud</button></br>
