@@ -34,7 +34,7 @@ function compactJson(json) {
 
 $(document).ready(function() {
     //Clear outstanding local storage.
-    if(localstorage.length != 0){
+    if(localStorage.length != 0){
         if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
             localStorage.clear();
         }
