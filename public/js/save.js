@@ -33,7 +33,11 @@ function compactJson(json) {
 }
 
 $(document).ready(function() {
-    localStorage.clear();
+    if(localstorage.length != 0){
+        if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
+            localStorage.clear();
+        }
+    }
     $("#saveButton").on('click', function() {
         var name = dataName + counter.toString();
         saveN($("#mainform").serializeArray(), name);
@@ -57,10 +61,10 @@ $(document).ready(function() {
                 data: data
             });
             request.done(function(response) {
-                alert(response);
+                // alert(response);
             });
             request.fail(function(jqXHR, textStatus) {
-                alert(textStatus);
+                // alert(textStatus);
             });
         }
     }
