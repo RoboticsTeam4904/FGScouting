@@ -57,7 +57,7 @@ $(document).ready(function() {
                 data: data
             });
             request.done(function(response) {
-                // console.log(response);
+                alert(response);
             });
             request.fail(function(jqXHR, textStatus) {
                 console.log(textStatus);
