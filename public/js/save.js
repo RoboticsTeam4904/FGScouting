@@ -60,7 +60,7 @@ $(document).ready(function() {
                 alert(response);
             });
             request.fail(function(jqXHR, textStatus) {
-                console.log(textStatus);
+                alert(textStatus);
             });
         }
     }
