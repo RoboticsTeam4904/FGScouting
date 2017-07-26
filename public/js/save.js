@@ -63,6 +63,7 @@ $(document).ready(function() {
     }
     //Push All Data
     function pushData() { //TODO: Check for connectivity before running.
+
         for (var i = counter; i > 1; i--) {
             var data = JSON.parse(get('form', i));
             var request = $.ajax({
@@ -76,8 +77,7 @@ $(document).ready(function() {
                 counter--;
             });
             request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
-                alert("Database not loaded. Make sure you have a strong connection to wifi. If that is not the issue, reach out to a system administrator for help. Error Message: " + textStatus);
-                return;
+                alert("Pushing was unsuccessful. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
             });
         }
     }
