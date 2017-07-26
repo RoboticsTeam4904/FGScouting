@@ -54,7 +54,6 @@ $(document).ready(function() {
             saveCurrentForm();
         }
         pushData();
-        counter = 1;
     });
     //Save Current Form
     function saveCurrentForm(){
@@ -74,9 +73,11 @@ $(document).ready(function() {
             request.done(function(response) { //If pushing is successful.
                 // alert(response); //TODO: Add clear message after successful push.
                 localStorage.removeItem('dataName' + i);
+                counter--;
             });
             request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
                 alert("Database not loaded. Make sure you have a strong connection to wifi. If that is not the issue, reach out to a system administrator for help. Error Message: " + textStatus);
+                return;
             });
         }
     }
