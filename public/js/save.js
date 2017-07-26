@@ -33,24 +33,36 @@ function compactJson(json) {
 }
 
 $(document).ready(function() {
+    //Clear outstanding local storage.
     if(localstorage.length != 0){
         if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
             localStorage.clear();
         }
     }
+    //Saves form to localstorage on click.
     $("#saveButton").on('click', function() {
-        var name = dataName + counter.toString();
-        saveN($("#mainform").serializeArray(), name);
-        counter++;
+        saveCurrentForm();
     });
+    //Resets the form on click.
     $("#clearForm").on('click', function() {
         $("#mainform")[0].reset();
     });
+    //Pushes the data to the cloud.
     $("#pushData").on('click', function() {
+        //Adds the option to save the current form.
+        if(confirm('Would you like to push your current form as well?')){
+            saveCurrentForm();
+        }
         pushData();
         counter = 1;
         localStorage.clear();
     });
+    //Save Current Form
+    function saveCurrentForm(){
+        var name = dataName + counter.toString();
+        saveN($("#mainform").serializeArray(), name);
+        counter++;
+    }
     //Push All Data
     function pushData() { //TODO: Check for connectivity before running.
         for (var i = 1; i < counter; i++) {
