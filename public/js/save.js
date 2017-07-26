@@ -55,7 +55,6 @@ $(document).ready(function() {
         }
         pushData();
         counter = 1;
-        localStorage.clear();
     });
     //Save Current Form
     function saveCurrentForm(){
@@ -65,18 +64,19 @@ $(document).ready(function() {
     }
     //Push All Data
     function pushData() { //TODO: Check for connectivity before running.
-        for (var i = 1; i < counter; i++) {
+        for (var i = counter; i > 1; i--) {
             var data = JSON.parse(get('form', i));
             var request = $.ajax({
                 type: 'POST',
                 url: '/pushData',
                 data: data
             });
-            request.done(function(response) {
-                // alert(response);
+            request.done(function(response) { //If pushing is successful.
+                // alert(response); //TODO: Add clear message after successful push.
+                localStorage.removeItem('dataName' + i);
             });
-            request.fail(function(jqXHR, textStatus) {
-                // alert(textStatus);
+            request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
+                alert("Database not loaded. Make sure you have a strong connection to wifi. If that is not the issue, reach out to a system administrator for help. Error Message: " + textStatus);
             });
         }
     }
