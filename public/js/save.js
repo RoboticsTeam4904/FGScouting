@@ -50,10 +50,12 @@ $(document).ready(function() {
     //Pushes the data to the cloud.
     $("#pushData").on('click', function() {
         //Adds the option to save the current form.
-        if(confirm('Would you like to push your current form as well?')){
-            saveCurrentForm();
+        if(confirm('Note: your current form will not be pushed. Is this ok?')){
+            pushData();
+        }else{
+            alert("Please save your form and then push again.");
         }
-        pushData();
+        
     });
     //Save Current Form
     function saveCurrentForm(){
