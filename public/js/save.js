@@ -50,12 +50,10 @@ $(document).ready(function() {
     //Pushes the data to the cloud.
     $("#pushData").on('click', function() {
         //Adds the option to save the current form.
-        if(confirm('Note: your current form will not be pushed. Is this ok?')){
-            pushData();
-        }else{
-            alert("Please save your form and then push again.");
+        if(confirm('Would you like to save the current form as well?')){
+            saveCurrentForm();
         }
-        
+        pushData();
     });
     //Save Current Form
     function saveCurrentForm(){
@@ -66,7 +64,7 @@ $(document).ready(function() {
     //Push All Data
     function pushData() { //TODO: Check for connectivity before running.
         var error = false;
-        for (var i = counter; i > 1; i--) {
+        for (var i = (counter-1); i >= 1; i--) {
             var data = JSON.parse(get('form', i));
             var request = $.ajax({
                 type: 'POST',
