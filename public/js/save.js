@@ -63,7 +63,7 @@ $(document).ready(function() {
     }
     //Push All Data
     function pushData() { //TODO: Check for connectivity before running.
-
+        var error = false;
         for (var i = counter; i > 1; i--) {
             var data = JSON.parse(get('form', i));
             var request = $.ajax({
@@ -77,7 +77,10 @@ $(document).ready(function() {
                 counter--;
             });
             request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
-                alert("Pushing was unsuccessful. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                if(!error){
+                    alert("Pushing was unsuccessful. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                    error = true;
+                }
             });
         }
     }
