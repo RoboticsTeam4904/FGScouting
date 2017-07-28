@@ -33,6 +33,13 @@ function compactJson(json) {
 }
 
 $(document).ready(function() {
+    Offline.on('confirmed-down', function () {
+        alert('Connection Lost');
+    });
+
+    Offline.on('confirmed-up', function () {
+        alert('Connection Found');
+    });
     //Clear outstanding local storage.
     if(localStorage.length != 0){
         if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
