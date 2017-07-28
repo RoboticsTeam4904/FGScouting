@@ -33,13 +33,17 @@ function compactJson(json) {
 }
 
 $(document).ready(function() {
-    Offline.on('confirmed-down', function () {
-        alert('Connection Lost');
-    });
-
-    Offline.on('confirmed-up', function () {
-        alert('Connection Found');
-    });
+    Offline.check();
+    var cachedConnectionStatus = Offline.state
+    setInterval(function(){
+        Offline.check();
+        if(Offline.state == 'up' && localStorage.length > 0){
+            pushData();
+            alert("Data Pushed");
+        }else if(Offline.state == 'down' && cachedConnectionStatus == 'up'){
+            alert("Connection Lost");
+        }
+    }, 5000);
     //Clear outstanding local storage.
     if(localStorage.length != 0){
         if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
@@ -70,6 +74,7 @@ $(document).ready(function() {
     }
     //Push All Data
     function pushData() { //TODO: Check for connectivity before running.
+        alert("pushing");
         var error = false;
         for (var i = (counter-1); i >= 1; i--) {
             var data = JSON.parse(get('form', i));
