@@ -33,28 +33,64 @@ function compactJson(json) {
 }
 
 $(document).ready(function() {
+
+    /*
+    * Run on Startup
+    */
+
     //Clear outstanding local storage.
     if(localStorage.length != 0){
         if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
             localStorage.clear();
         }
     }
-    //Saves form to localstorage on click.
-    $("#saveButton").on('click', function() {
-        saveCurrentForm();
+    Offline.check();
+    var cachedConnectionStatus = Offline.state;
+
+    /*
+    * Repetitive Checks
+    */
+
+    // Every 1 Second, check connection. If connected, push the data to the cloud.
+    setInterval(function(){
+        Offline.check();
+        if(Offline.state == 'up'){ //If connected
+            if(localStorage.length > 0){ //If there's data.
+                pushData();
+            }
+            cachedConnectionStatus = 'up';
+        }else if(Offline.state == 'down' && cachedConnectionStatus == 'up'){ //If not connected
+            console.log("Connection Lost");
+            cachedConnectionStatus = 'down';
+        }
+    }, 1000);
+
+    /*
+    * Button Responses
+    */
+
+    //Pushes current form if able, saves if not
+    $("#submitData").on('click', function() {
+        Offline.check();
+        if(Offline.state == 'up'){ //If Connected
+            saveCurrentForm();
+            pushData();
+            $("#mainform")[0].reset();
+            console.log("Form Pushed");
+        }else{ //If not connected
+            alert('Connection not Found. Saving form...');
+            saveCurrentForm();
+        }
     });
     //Resets the form on click.
     $("#clearForm").on('click', function() {
         $("#mainform")[0].reset();
     });
-    //Pushes the data to the cloud.
-    $("#pushData").on('click', function() {
-        //Adds the option to save the current form.
-        if(confirm('Would you like to add the current form to localstorage before saving?')){
-            saveCurrentForm();
-        }
-        pushData();
-    });
+
+    /*
+    * Functions
+    */
+
     //Save Current Form
     function saveCurrentForm(){
         var name = dataName + counter.toString();
@@ -72,7 +108,7 @@ $(document).ready(function() {
                 data: data
             });
             request.done(function(response) { //If pushing is successful.
-                // alert(response); //TODO: Add clear message after successful push.
+                console.log("Data successfully pushed.");
                 localStorage.removeItem('dataName' + i);
                 counter--;
             });
