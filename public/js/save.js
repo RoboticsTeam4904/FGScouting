@@ -33,15 +33,30 @@ function compactJson(json) {
 }
 
 $(document).ready(function() {
+
+    /*
+    * Run on Startup
+    */
+
+    //Clear outstanding local storage.
+    if(localStorage.length != 0){
+        if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
+            localStorage.clear();
+        }
+    }
     Offline.check();
     var cachedConnectionStatus = Offline.state;
+
+    /*
+    * Repetitive Checks
+    */
+
     // Every 1 Second, check connection. If connected, push the data to the cloud.
     setInterval(function(){
         Offline.check();
         if(Offline.state == 'up'){
             if(localStorage.length > 0){
                 pushData();
-                console.log("Data Pushed");
             }
             cachedConnectionStatus = 'up';
         }else if(Offline.state == 'down' && cachedConnectionStatus == 'up'){
@@ -49,12 +64,11 @@ $(document).ready(function() {
             cachedConnectionStatus = 'down';
         }
     }, 1000);
-    //Clear outstanding local storage.
-    if(localStorage.length != 0){
-        if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
-            localStorage.clear();
-        }
-    }
+
+    /*
+    * Button Responses
+    */
+
     //Pushes current form if able, saves if not
     $("#submitData").on('click', function() {
         Offline.check();
@@ -72,6 +86,11 @@ $(document).ready(function() {
     $("#clearForm").on('click', function() {
         $("#mainform")[0].reset();
     });
+
+    /*
+    * Functions
+    */
+
     //Save Current Form
     function saveCurrentForm(){
         var name = dataName + counter.toString();
@@ -80,7 +99,6 @@ $(document).ready(function() {
     }
     //Push All Data
     function pushData() { //TODO: Check for connectivity before running.
-        console.log("pushData(): started");
         var error = false;
         for (var i = (counter-1); i >= 1; i--) {
             var data = JSON.parse(get('form', i));
@@ -90,7 +108,7 @@ $(document).ready(function() {
                 data: data
             });
             request.done(function(response) { //If pushing is successful.
-                // alert(response); //TODO: Add clear message after successful push.
+                console.log("Data successfully pushed.");
                 localStorage.removeItem('dataName' + i);
                 counter--;
             });
