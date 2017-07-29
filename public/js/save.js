@@ -54,12 +54,12 @@ $(document).ready(function() {
     // Every 1 Second, check connection. If connected, push the data to the cloud.
     setInterval(function(){
         Offline.check();
-        if(Offline.state == 'up'){
-            if(localStorage.length > 0){
+        if(Offline.state == 'up'){ //If connected
+            if(localStorage.length > 0){ //If there's data.
                 pushData();
             }
             cachedConnectionStatus = 'up';
-        }else if(Offline.state == 'down' && cachedConnectionStatus == 'up'){
+        }else if(Offline.state == 'down' && cachedConnectionStatus == 'up'){ //If not connected
             console.log("Connection Lost");
             cachedConnectionStatus = 'down';
         }
@@ -82,7 +82,7 @@ $(document).ready(function() {
             saveCurrentForm();
         }
     });
-    // //Resets the form on click.
+    //Resets the form on click.
     $("#clearForm").on('click', function() {
         $("#mainform")[0].reset();
     });
