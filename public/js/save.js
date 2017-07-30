@@ -34,6 +34,14 @@ function compactJson(json) {
 
 $(document).ready(function() {
 
+    // Grab the required form fields
+    var requiredFields = [];
+    $("#mainform :input").each(function(){
+        if(this.required){
+            requiredFields.push(this.name);
+        }
+    });
+
     /*
     * Run on Startup
     */
@@ -55,7 +63,8 @@ $(document).ready(function() {
     setInterval(function(){
         Offline.check();
         if(Offline.state == 'up'){ //If connected
-            if(localStorage.length > 0){ //If there's data.
+            //If there's data.
+            if(localStorage.length > 0){ 
                 pushData();
             }
             cachedConnectionStatus = 'up';
@@ -71,15 +80,32 @@ $(document).ready(function() {
 
     //Pushes current form if able, saves if not
     $("#submitData").on('click', function() {
-        Offline.check();
-        if(Offline.state == 'up'){ //If Connected
-            saveCurrentForm();
-            pushData();
-            $("#mainform")[0].reset();
-            console.log("Form Pushed");
-        }else{ //If not connected
-            alert('Connection not Found. Saving form...');
-            saveCurrentForm();
+        //Check if all the fields are required
+        var currentFormJS = $("#mainform").serializeArray();
+        var fieldsUnfilled = false;
+        for(var key in currentFormJS){
+            if(currentFormJS.hasOwnProperty){
+                // If the name of the current form is in the requiredFields
+                if(requiredFields.indexOf(currentFormJS[key].name) > -1 && currentFormJS[key].value == ""){
+                    fieldsUnfilled = true;
+                }
+            }
+        }
+        //If required fields are unfilled.
+        if(fieldsUnfilled){
+            alert("Not all required fields are filled. Please complete the required fields before submitting.");
+        }else{
+            Offline.check();
+            // If Connected else Not-Connected
+            if(Offline.state == 'up'){
+                saveCurrentForm();
+                pushData();
+                $("#mainform")[0].reset();
+                console.log("Form Pushed");
+            }else{ 
+                alert('Connection not Found. Saving form...');
+                saveCurrentForm();
+            }
         }
     });
     //Resets the form on click.
@@ -109,15 +135,15 @@ $(document).ready(function() {
             });
             request.done(function(response) { //If pushing is successful.
                 console.log("Data successfully pushed.");
-                localStorage.removeItem('dataName' + i);
-                counter--;
             });
             request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
                 if(!error){
-                    alert("Pushing was unsuccessful. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                    alert("Error while pushing. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
                     error = true;
                 }
             });
         }
+        counter = 1;
+        localStorage.clear();
     }
 });
