@@ -34,6 +34,14 @@ function compactJson(json) {
 
 $(document).ready(function() {
 
+    // Grab the required form fields
+    var requiredFields = [];
+    $("#mainform :input").each(function(){
+        if(this.required){
+            requiredFields.push(this.name);
+        }
+    });
+
     /*
     * Run on Startup
     */

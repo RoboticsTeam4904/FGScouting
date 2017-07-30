@@ -5,15 +5,15 @@
     <h2>Team 4904's 2017 Stand Scouting</h2>
     <!--Before Match-->
     <strong class="header">Before Match</strong></br>
-    <strong class="question lineAnswer">Name:</strong> <input class="dynamic" type="text" name="username" />
+    <strong class="question lineAnswer">Name: *</strong> <input class="dynamic" type="text" name="username" required/>
     </br>
-    <strong class="question lineAnswer">Team Number:</strong> <input class="dynamic" type="number" min="0" name="teamNumber" />
+    <strong class="question lineAnswer">Team Number: *</strong> <input class="dynamic" type="number" min="0" name="teamNumber" required/>
     </br>
-    <strong class="question lineAnswer">Match Number:</strong> <input class="dynamic" type="number" min="0" name="matchNumber" />
+    <strong class="question lineAnswer">Match Number: *</strong> <input class="dynamic" type="number" min="0" name="matchNumber" required/>
     </br>
-    <strong class="question">Is their robot present?</strong>
+    <strong class="question">Is their robot present? *</strong>
     </br>
-    <input type="radio" name="presence" value="no" checked> No
+    <input type="radio" name="presence" value="no" checked required> No
     </br>
     <input type="radio" name="presence" value="yes"> Yes
     </br>
@@ -25,18 +25,18 @@
         </br>
     </div>
     <!-- Baseline Crossing -->
-    <strong class="question">Baseline Crossing?</strong>
+    <strong class="question">Baseline Crossing? *</strong>
     </br>
-    <input type="radio" name="baselineCrossing" value="still" checked> Does not move.
+    <input type="radio" name="baselineCrossing" value="still" checked required> Does not move.
     </br>
     <input type="radio" name="baselineCrossing" value="move"> Moves, doesn't cross baseline.
     </br>
     <input type="radio" name="baselineCrossing" value="crosses"> Crosses the Baseline.
     </br>
     <!-- Auton Fuel Status -->
-    <strong class="question">Shoots Fuel?</strong>
+    <strong class="question">Shoots Fuel? *</strong>
     </br>
-    <input type="radio" name="autonFuelStatus" value="no" checked> No
+    <input type="radio" name="autonFuelStatus" value="no" checked required> No
     </br>
     <input type="radio" name="autonFuelStatus" value="yes"> Yes
     </br>
