@@ -109,15 +109,15 @@ $(document).ready(function() {
             });
             request.done(function(response) { //If pushing is successful.
                 console.log("Data successfully pushed.");
-                localStorage.removeItem('dataName' + i);
-                counter--;
             });
             request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
                 if(!error){
-                    alert("Pushing was unsuccessful. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                    alert("Error while pushing. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
                     error = true;
                 }
             });
         }
+        counter = 1;
+        localStorage.clear();
     }
 });
