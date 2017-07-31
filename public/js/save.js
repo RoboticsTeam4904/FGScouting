@@ -1,3 +1,34 @@
+/*
+* Oauth with google logins.
+*/
+
+// Run when signed in.
+function onSignIn(googleUser) {
+    console.log("User logged in.");
+    var id_token = googleUser.getAuthResponse().id_token;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/tokensignin');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+      console.log('Signed in as: ' + xhr.responseText);
+  };
+  xhr.send('idtoken=' + id_token);
+}
+
+// Run when signed out.
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+  });
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/tokensignout');
+    xhr.onload = function() {
+      console.log('Signed out.');
+  };
+  xhr.send();
+}
+
 var counter = 1;
 var dataName = "form";
 // This should be changed to retrieve data from the form
@@ -33,7 +64,6 @@ function compactJson(json) {
 }
 
 $(document).ready(function() {
-
     // Grab the required form fields
     var requiredFields = [];
     $("#mainform :input").each(function(){
@@ -100,7 +130,6 @@ $(document).ready(function() {
             if(Offline.state == 'up'){
                 saveCurrentForm();
                 pushData();
-                $("#mainform")[0].reset();
                 console.log("Form Pushed");
             }else{ 
                 alert('Connection not Found. Saving form...');
@@ -111,6 +140,10 @@ $(document).ready(function() {
     //Resets the form on click.
     $("#clearForm").on('click', function() {
         $("#mainform")[0].reset();
+    });
+    //Signs out of google
+    $("#signout").on('click', function() {
+        signOut();
     });
 
     /*
@@ -134,11 +167,16 @@ $(document).ready(function() {
                 data: data
             });
             request.done(function(response) { //If pushing is successful.
-                console.log("Data successfully pushed.");
+                console.log(response);
+                if(response == "No Email"){
+                    alert("Please sign in with google.")
+                }else if(response == "Invalid Email"){
+                    alert("Please sign in with your nuevaschool.org account");
+                }
             });
             request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
                 if(!error){
-                    alert("Error while pushing. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                    alert("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
                     error = true;
                 }
             });
