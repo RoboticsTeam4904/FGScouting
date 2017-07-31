@@ -10,9 +10,13 @@ function onSignIn(googleUser) {
     xhr.open('POST', '/tokensignin');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
-      console.log('Signed in as: ' + xhr.responseText);
-  };
-  xhr.send('idtoken=' + id_token);
+        if(xhr.responseText == "error"){
+            signOut();
+        }else{
+            console.log('Signed in as: ' + xhr.responseText);
+        }
+    };
+    xhr.send('idtoken=' + id_token);
 }
 
 // Run when signed out.
@@ -157,31 +161,34 @@ $(document).ready(function() {
         counter++;
     }
     //Push All Data
-    function pushData() { //TODO: Check for connectivity before running.
+    function pushData() {
         var error = false;
+        var dataArray = [];
         for (var i = (counter-1); i >= 1; i--) {
-            var data = JSON.parse(get('form', i));
-            var request = $.ajax({
-                type: 'POST',
-                url: '/pushData',
-                data: data
-            });
-            request.done(function(response) { //If pushing is successful.
-                console.log(response);
-                if(response == "No Email"){
-                    alert("Please sign in with google.")
-                }else if(response == "Invalid Email"){
-                    alert("Please sign in with your nuevaschool.org account");
-                }
-            });
-            request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
-                if(!error){
-                    alert("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
-                    error = true;
-                }
-            });
+            dataArray.push(get('form', i));
         }
-        counter = 1;
-        localStorage.clear();
+        console.log(dataArray);
+        var request = $.ajax({
+            type: 'POST',
+            url: '/pushData',
+            data: dataArray
+        });
+        request.done(function(response) { //If pushing is successful.
+            if(response == "No Email"){
+                console.log("Please sign in with google.")
+            }else if(response == "Invalid Email"){
+                console.log("Please sign in with your nuevaschool.org account");
+            }else{
+                console.log(response);
+                counter = 1;
+                localStorage.clear();
+            }
+        });
+        request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
+            if(!error){
+                console.log("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                error = true;
+            }
+        });
     }
 });
