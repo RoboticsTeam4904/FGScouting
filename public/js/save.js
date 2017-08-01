@@ -14,6 +14,8 @@ function onSignIn(googleUser) {
             signOut();
         }else{
             console.log('Signed in as: ' + xhr.responseText);
+            $("#signInButton").hide();
+            $("#signOutButton").show();
         }
     };
     xhr.send('idtoken=' + id_token);
@@ -29,6 +31,8 @@ function signOut() {
     xhr.open('POST', '/tokensignout');
     xhr.onload = function() {
       console.log('Signed out.');
+      $("#signOutButton").hide();
+      $("#signInButton").show();
   };
   xhr.send();
 }
@@ -86,8 +90,13 @@ $(document).ready(function() {
             localStorage.clear();
         }
     }
+    //Set Offline Status
     Offline.check();
     var cachedConnectionStatus = Offline.state;
+
+    //Hide Buttons
+    $("#signOutButton").hide();
+    $("#signInButton").show();
 
     /*
     * Repetitive Checks
@@ -163,21 +172,23 @@ $(document).ready(function() {
     //Push All Data
     function pushData() {
         var error = false;
-        var dataArray = [];
-        for (var i = (counter-1); i >= 1; i--) {
-            dataArray.push(get('form', i));
+        var dataArray = {};
+        for (var i = 1; i < counter; i++) {
+            dataArray[i] = get('form', i);
         }
-        console.log(dataArray);
+        dataArray = JSON.stringify(dataArray);
         var request = $.ajax({
             type: 'POST',
             url: '/pushData',
-            data: dataArray
+            data: {
+                content: dataArray
+            },
         });
         request.done(function(response) { //If pushing is successful.
             if(response == "No Email"){
-                console.log("Please sign in with google.")
+                alert("Please sign in with google.")
             }else if(response == "Invalid Email"){
-                console.log("Please sign in with your nuevaschool.org account");
+                alert("Please sign in with your nuevaschool.org account");
             }else{
                 console.log(response);
                 counter = 1;
@@ -186,7 +197,7 @@ $(document).ready(function() {
         });
         request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
             if(!error){
-                console.log("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                alert("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
                 error = true;
             }
         });

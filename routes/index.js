@@ -13,6 +13,7 @@ router.get('/', function(req, res) {
     });
 });
 router.post('/pushData', function(req, res, next) {
+    console.log("starting");
     var db = req.db;
     var resultsHolder = db.get('formResults');
     if(currentEmail == ''){
@@ -21,23 +22,24 @@ router.post('/pushData', function(req, res, next) {
         res.send('Invalid Email');
     }else{
         var error = false;
-        console.log("Content " + req.body);
-        for(var storedData in req.body.content){
+        var contentObject = JSON.parse(req.body.content);
+        for(var storedData in contentObject){
             if(req.body.content.hasOwnProperty(storedData)){
-                console.log("Stored Data " + storedData);
-                resultsHolder.insert(storedData, function(err, result) {
+                cachedData = JSON.parse(contentObject[storedData]);
+                resultsHolder.insert(cachedData, function(err, result) {
                     if(err){
+                        console.log("Erroring with " + err);
                         error = true;
                     }
                 });
             }else{
-                console.log("no own property for " + storedData);
+                console.log("No own property for " + storedData);
             }
         }
         if (error){
             res.send('Data could not be entered.');
         }else{
-            res.send('Success');
+            res.send('Completed');
         }
     }
 });
