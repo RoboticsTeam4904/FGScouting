@@ -13,7 +13,7 @@ function onSignIn(googleUser) {
         if(xhr.responseText === "error"){
             signOut();
         }else{
-            console.log('Signed in as: ' + xhr.responseText);
+            alert('Signed in as ' + xhr.responseText);
             $("#signInButton").hide();
             $("#signOutButton").show();
         }
@@ -30,11 +30,11 @@ function signOut() {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/tokensignout');
     xhr.onload = function() {
-      console.log('Signed out.');
-      $("#signOutButton").hide();
-      $("#signInButton").show();
-  };
-  xhr.send();
+        alert('Signed out.');
+        $("#signOutButton").hide();
+        $("#signInButton").show();
+    };
+    xhr.send();
 }
 
 var counter = 0;
@@ -108,7 +108,7 @@ $(document).ready(function() {
         if(Offline.state === 'up'){ //If connected
             //If there's data.
             if(localStorage.length > 0){ 
-                pushData();
+                pushData(false);
             }
             cachedConnectionStatus = 'up';
         }else if(Offline.state === 'down' && cachedConnectionStatus === 'up'){ //If not connected
@@ -142,7 +142,7 @@ $(document).ready(function() {
             // If Connected else Not-Connected
             if(Offline.state === 'up'){
                 saveCurrentForm();
-                pushData();
+                pushData(true);
                 console.log("Form Pushed");
             }else{ 
                 alert('Connection not Found. Saving form...');
@@ -170,7 +170,7 @@ $(document).ready(function() {
         counter++;
     }
     //Push All Data
-    function pushData() {
+    function pushData(alertUser) {
         var error = false;
         var dataArray = [];
         for (var i = 0; i < counter; i++) {
@@ -186,9 +186,17 @@ $(document).ready(function() {
         });
         request.done(function(response) { //If pushing is successful.
             if(response === "No Email"){
-                alert("Please sign in with google.");
+                if(alertUser){
+                    alert("Please sign in with google.");
+                }else{
+                    console.log("Please sign in with google.");
+                }
             }else if(response === "Invalid Email"){
-                alert("Please sign in with your nuevaschool.org account");
+                if(alertUser){
+                    alert("Please sign in with your nuevaschool.org account");
+                }else{
+                    console.log("Please sign in with your nuevaschool.org account");
+                }
             }else{
                 console.log(response);
                 counter = 0;
@@ -197,7 +205,11 @@ $(document).ready(function() {
         });
         request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
             if(!error){
-                alert("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                if(alertUser){
+                    alert("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                }else{
+                    console.log("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                }
                 error = true;
             }
         });
