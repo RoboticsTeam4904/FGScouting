@@ -1,7 +1,7 @@
 var express = require('express');
 var clientID = "692884782115-u4o2n8dco40hjqa18b1agl9492m05l1j.apps.googleusercontent.com";
 var GoogleAuth = require('google-auth-library');
-var auth = new GoogleAuth;
+var auth = new GoogleAuth();
 var client = new auth.OAuth2(clientID, '', '');
 var router = express.Router();
 var currentEmail;
@@ -48,8 +48,8 @@ router.post('/tokensignin', function(req, res, next) {
         req.body.idtoken, 
         clientID, function(e, login) {
             var payload = login.getPayload();
-            if(payload['aud'] == clientID && (payload['iss'] == "accounts.google.com" || payload['iss'] == "https://accounts.google.com")){
-                currentEmail = payload['email'];
+            if(payload.aud == clientID && (payload.iss == "accounts.google.com" || payload.iss == "https://accounts.google.com")){
+                currentEmail = payload.email;
                 res.send(currentEmail);
             }else{
                 res.send("error");

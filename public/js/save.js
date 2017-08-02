@@ -186,7 +186,7 @@ $(document).ready(function() {
         });
         request.done(function(response) { //If pushing is successful.
             if(response == "No Email"){
-                alert("Please sign in with google.")
+                alert("Please sign in with google.");
             }else if(response == "Invalid Email"){
                 alert("Please sign in with your nuevaschool.org account");
             }else{
