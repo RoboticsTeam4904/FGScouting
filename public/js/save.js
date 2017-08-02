@@ -37,7 +37,7 @@ function signOut() {
   xhr.send();
 }
 
-var counter = 1;
+var counter = 0;
 var dataName = "form";
 // This should be changed to retrieve data from the form
 
@@ -173,7 +173,7 @@ $(document).ready(function() {
     function pushData() {
         var error = false;
         var dataArray = {};
-        for (var i = 1; i < counter; i++) {
+        for (var i = 0; i < counter; i++) {
             dataArray[i] = get('form', i);
         }
         dataArray = JSON.stringify(dataArray);
@@ -191,7 +191,7 @@ $(document).ready(function() {
                 alert("Please sign in with your nuevaschool.org account");
             }else{
                 console.log(response);
-                counter = 1;
+                counter = 0;
                 localStorage.clear();
             }
         });
