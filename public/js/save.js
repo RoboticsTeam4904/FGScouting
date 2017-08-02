@@ -172,9 +172,9 @@ $(document).ready(function() {
     //Push All Data
     function pushData() {
         var error = false;
-        var dataArray = {};
+        var dataArray = [];
         for (var i = 0; i < counter; i++) {
-            dataArray[i] = get('form', i);
+            dataArray.push(get('form', i));
         }
         dataArray = JSON.stringify(dataArray);
         var request = $.ajax({
