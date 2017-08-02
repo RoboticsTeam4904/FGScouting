@@ -18,7 +18,7 @@ router.post('/pushData', function(req, res, next) {
     var resultsHolder = db.get('formResults');
     if(currentEmail == ''){
         res.send('No Email');
-    }else if(!(currentEmail.split('@')[1] == "nuevaschool.org")){
+    }else if(currentEmail.split('@')[1] !== "nuevaschool.org"){
         res.send('Invalid Email');
     }else{
         var error = false;
