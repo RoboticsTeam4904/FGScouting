@@ -16,7 +16,7 @@ router.post('/pushData', function(req, res, next) {
     console.log("starting");
     var db = req.db;
     var resultsHolder = db.get('formResults');
-    if(currentEmail == ''){
+    if(currentEmail === ''){
         res.send('No Email');
     }else if(currentEmail.split('@')[1] !== "nuevaschool.org"){
         res.send('Invalid Email');
@@ -48,7 +48,7 @@ router.post('/tokensignin', function(req, res, next) {
         req.body.idtoken, 
         clientID, function(e, login) {
             var payload = login.getPayload();
-            if(payload.aud == clientID && (payload.iss == "accounts.google.com" || payload.iss == "https://accounts.google.com")){
+            if(payload.aud === clientID && (payload.iss === "accounts.google.com" || payload.iss === "https://accounts.google.com")){
                 currentEmail = payload.email;
                 res.send(currentEmail);
             }else{

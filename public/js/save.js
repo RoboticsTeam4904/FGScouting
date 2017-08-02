@@ -10,7 +10,7 @@ function onSignIn(googleUser) {
     xhr.open('POST', '/tokensignin');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
-        if(xhr.responseText == "error"){
+        if(xhr.responseText === "error"){
             signOut();
         }else{
             console.log('Signed in as: ' + xhr.responseText);
@@ -61,7 +61,7 @@ function compactJson(json) {
         for (var prop in obj) {
             // skip loop if the property is from prototype
             if (!obj.hasOwnProperty(prop)) continue;
-            if (prop == "name") {
+            if (prop === "name") {
                 name = obj[prop];
             } else {
                 object[name] = obj[prop];
@@ -85,7 +85,7 @@ $(document).ready(function() {
     */
 
     //Clear outstanding local storage.
-    if(localStorage.length != 0){
+    if(localStorage.length !== 0){
         if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
             localStorage.clear();
         }
@@ -105,13 +105,13 @@ $(document).ready(function() {
     // Every 1 Second, check connection. If connected, push the data to the cloud.
     setInterval(function(){
         Offline.check();
-        if(Offline.state == 'up'){ //If connected
+        if(Offline.state === 'up'){ //If connected
             //If there's data.
             if(localStorage.length > 0){ 
                 pushData();
             }
             cachedConnectionStatus = 'up';
-        }else if(Offline.state == 'down' && cachedConnectionStatus == 'up'){ //If not connected
+        }else if(Offline.state === 'down' && cachedConnectionStatus === 'up'){ //If not connected
             console.log("Connection Lost");
             cachedConnectionStatus = 'down';
         }
@@ -129,7 +129,7 @@ $(document).ready(function() {
         for(var key in currentFormJS){
             if(currentFormJS.hasOwnProperty){
                 // If the name of the current form is in the requiredFields
-                if(requiredFields.indexOf(currentFormJS[key].name) > -1 && currentFormJS[key].value == ""){
+                if(requiredFields.indexOf(currentFormJS[key].name) > -1 && currentFormJS[key].value === ""){
                     fieldsUnfilled = true;
                 }
             }
@@ -140,7 +140,7 @@ $(document).ready(function() {
         }else{
             Offline.check();
             // If Connected else Not-Connected
-            if(Offline.state == 'up'){
+            if(Offline.state === 'up'){
                 saveCurrentForm();
                 pushData();
                 console.log("Form Pushed");
@@ -185,9 +185,9 @@ $(document).ready(function() {
             },
         });
         request.done(function(response) { //If pushing is successful.
-            if(response == "No Email"){
+            if(response === "No Email"){
                 alert("Please sign in with google.");
-            }else if(response == "Invalid Email"){
+            }else if(response === "Invalid Email"){
                 alert("Please sign in with your nuevaschool.org account");
             }else{
                 console.log(response);
