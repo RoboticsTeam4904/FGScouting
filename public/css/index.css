@@ -3,9 +3,61 @@ body {
     font-family: 'Arvo', serif;
     font-weight:100;
 }
+html{
+   background-color: #0000;
+   background-image: url(/images/bg4_2.png);
+   background-size: cover;
+   height:100%;
+}
+* {
+   box-sizing:border-box;
+   -webkit-box-sizing:border-box;
+   -moz-box-sizing:border-box;
+   -webkit-font-smoothing:antialiased;
+   -moz-font-smoothing:antialiased;
+   -o-font-smoothing:antialiased;
+   font-smoothing:antialiased;
+   text-rendering:optimizeLegibility;
+}
 
 form {
     font-size: 18px;
+    background-color:rgba(72,72,72,0.5);
+    padding: 30px 90px 20px;
+    max-width:50%;
+    float: left;
+    left: 20%;
+    position: absolute;
+    margin-top:40px;
+    margin-left: 0px;
+    border-radius:7px;
+    -webkit-border-radius:7px;
+    -moz-border-radius:7px;
+}
+
+#form button[type ="button"]{
+   cursor:pointer;
+   width:100%;
+   border:none;
+   background:#991D57;
+   background-image:linear-gradient(bottom, #8C1C50 0%, #991D57 52%);
+   background-image:-moz-linear-gradient(bottom, #8C1C50 0%, #991D57 52%);
+   background-image:-webkit-linear-gradient(bottom, #8C1C50 0%, #991D57 52%);
+   color:#FFF;
+   margin:0 0 5px;
+   padding:10px;
+   border-radius:5px;
+}
+#form button[type="button"]:hover {
+   background-image:linear-gradient(bottom, #9C215A 0%, #A82767 52%);
+   background-image:-moz-linear-gradient(bottom, #9C215A 0%, #A82767 52%);
+   background-image:-webkit-linear-gradient(bottom, #9C215A 0%, #A82767 52%);
+   -webkit-transition:background 0.3s ease-in-out;
+   -moz-transition:background 0.3s ease-in-out;
+   transition:background-color 0.3s ease-in-out;
+}
+#form button[type="button"]:active {
+   box-shadow:inset 0 1px 3px rgba(0,0,0,0.5);
 }
 
 #wrapper {
@@ -23,6 +75,10 @@ form {
 
 .header {
     font-size: 24px;
+    margin: 0 0 10px 0;
+}
+h2{
+  margin: 0 0 20px 0;
 }
 .question{
   text-decoration: underline;
@@ -33,4 +89,14 @@ form {
 .lineAnswer {
   text-decoration: none;
   padding-top: 0%;
+}
+@media only screen and (max-width: 580px) {
+   #contact-form{
+      left: 3%;
+      margin-right: 3%;
+      width: 88%;
+      margin-left: 0;
+      padding-left: 3%;
+      padding-right: 3%;
+   }
 }
