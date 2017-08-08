@@ -4,7 +4,6 @@ var GoogleAuth = require('google-auth-library');
 var auth = new GoogleAuth();
 var client = new auth.OAuth2(clientID, '', '');
 var router = express.Router();
-var currentEmail;
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -16,9 +15,9 @@ router.post('/pushData', function(req, res, next) {
     console.log("starting");
     var db = req.db;
     var resultsHolder = db.get('formResults');
-    if(!currentEmail){
+    if(!req.session.currentEmail){
         res.send('No Email');
-    }else if(currentEmail.split('@')[1] !== "nuevaschool.org"){
+    }else if(req.session.currentEmail.split('@')[1] !== "nuevaschool.org"){
         res.send('Invalid Email');
     }else{
         var error = false;
@@ -49,15 +48,15 @@ router.post('/tokensignin', function(req, res, next) {
         clientID, function(e, login) {
             var payload = login.getPayload();
             if(payload.aud === clientID && (payload.iss === "accounts.google.com" || payload.iss === "https://accounts.google.com")){
-                currentEmail = payload.email;
-                res.send(currentEmail);
+                req.session.currentEmail = payload.email;
+                res.send(req.session.currentEmail);
             }else{
                 res.send("error");
             }   
         });
 });
 router.post('/tokensignout', function(req, res, next) {
-    currentEmail = '';
+    req.session.currentEmail = '';
     res.send('Success');
 });
 

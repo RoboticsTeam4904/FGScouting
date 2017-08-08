@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session')
 
 var index = require('./routes/index');
 var mongo = require('mongodb');
@@ -39,6 +40,7 @@ app.use(function(req,res,next){
   next();
 });
 
+app.use(session({secret: process.env.SESSION_KEY, cookie:{ maxAge:3600 }}));
 app.use('/', index);
 
 // catch 404 and forward to error handler
