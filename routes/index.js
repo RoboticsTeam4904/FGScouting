@@ -15,10 +15,10 @@ router.post('/pushData', function(req, res, next) {
     console.log("starting");
     var db = req.db;
     var resultsHolder = db.get('formResults');
-    if(!(req.session.currentEmail.toString())){
-        res.send('No Email');
-    }else if(req.session.currentEmail.toString().split('@')[1] !== "nuevaschool.org"){
-        res.send('Invalid Email');
+    if(!(req.session.currentEmail)){
+        res.status(401).send('No Email');
+    }else if(req.session.currentEmail.split('@')[1] !== "nuevaschool.org"){
+        res.status(403).send('Invalid Email');
     }else{
         var error = false;
         var contentObject = JSON.parse(req.body.content);
@@ -38,7 +38,7 @@ router.post('/pushData', function(req, res, next) {
         if (error){
             res.send('Data could not be entered.');
         }else{
-            res.send('Completed');
+            res.send('Data successfully entered.');
         }
     }
 });

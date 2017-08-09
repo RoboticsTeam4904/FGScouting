@@ -185,30 +185,16 @@ $(document).ready(function() {
             },
         });
         request.done(function(response) { //If pushing is successful.
-            if(response === "No Email"){
-                if(alertUser){
-                    alert("Please sign in with google.");
-                }else{
-                    console.log("Please sign in with google.");
-                }
-            }else if(response === "Invalid Email"){
-                if(alertUser){
-                    alert("Please sign in with your nuevaschool.org account");
-                }else{
-                    console.log("Please sign in with your nuevaschool.org account");
-                }
-            }else{
-                console.log(response);
-                counter = 0;
-                localStorage.clear();
-            }
+            alert(response);
+            counter = 0;
+            localStorage.clear();
         });
-        request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
+        request.fail(function(jqXHR, textStatus, errorCode) { //If pushing is unsuccessful.
             if(!error){
                 if(alertUser){
-                    alert("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                    alert("Error: " + errorCode.toLowerCase() + ". Make sure you are logged into your Nueva email. Otherwise, please reach out to a qualified individual for assistance.");
                 }else{
-                    console.log("Error. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
+                    console.log("Error: " + errorCode.toLowerCase() + ". Make sure you are logged into your Nueva email. Otherwise, please reach out to a qualified individual for assistance.");
                 }
                 error = true;
             }
