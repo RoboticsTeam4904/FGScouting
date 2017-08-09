@@ -1,3 +1,37 @@
+var currentFormNumber = 0;
+var dataName = "form";
+// This should be changed to retrieve data from the form
+
+//Saves Data to Local Storage
+function saveN(data, name) {
+    localStorage.setItem(name, JSON.stringify(compactJson(data)));
+}
+
+// Retrieving localstorage: Set up with a button on the webpage? automatic? Run on initialization?
+function get(data, name) {
+    return localStorage.getItem(data + name);
+}
+
+function compactJson(json) {
+    var object = {};
+    var name;
+    for (var key in json) {
+        // skip loop if the property is from prototype
+        if (!json.hasOwnProperty(key)) continue;
+        var obj = json[key];
+        for (var prop in obj) {
+            // skip loop if the property is from prototype
+            if (!obj.hasOwnProperty(prop)) continue;
+            if (prop === "name") {
+                name = obj[prop];
+            } else {
+                object[name] = obj[prop];
+            }
+        }
+    }
+    return object;
+}
+
 /*
 * Oauth with google logins.
 */
@@ -35,40 +69,6 @@ function signOut() {
         $("#signInButton").show();
     };
     xhr.send();
-}
-
-var counter = 0;
-var dataName = "form";
-// This should be changed to retrieve data from the form
-
-//Saves Data to Local Storage
-function saveN(data, name) {
-    localStorage.setItem(name, JSON.stringify(compactJson(data)));
-}
-
-// Retrieving localstorage: Set up with a button on the webpage? automatic? Run on initialization?
-function get(data, name) {
-    return localStorage.getItem(data + name);
-}
-
-function compactJson(json) {
-    var object = {};
-    var name;
-    for (var key in json) {
-        // skip loop if the property is from prototype
-        if (!json.hasOwnProperty(key)) continue;
-        var obj = json[key];
-        for (var prop in obj) {
-            // skip loop if the property is from prototype
-            if (!obj.hasOwnProperty(prop)) continue;
-            if (prop === "name") {
-                name = obj[prop];
-            } else {
-                object[name] = obj[prop];
-            }
-        }
-    }
-    return object;
 }
 
 $(document).ready(function() {
@@ -165,15 +165,15 @@ $(document).ready(function() {
 
     //Save Current Form
     function saveCurrentForm(){
-        var name = dataName + counter.toString();
+        var name = dataName + currentFormNumber.toString();
         saveN($("#mainform").serializeArray(), name);
-        counter++;
+        currentFormNumber++;
     }
     //Push All Data
     function pushData(alertUser) {
         var error = false;
         var dataArray = [];
-        for (var i = 0; i < counter; i++) {
+        for (var i = 0; i < currentFormNumber; i++) {
             dataArray.push(get('form', i));
         }
         dataArray = JSON.stringify(dataArray);
@@ -186,7 +186,7 @@ $(document).ready(function() {
         });
         request.done(function(response) { //If pushing is successful.
             alert(response);
-            counter = 0;
+            currentFormNumber = 0;
             localStorage.clear();
         });
         request.fail(function(jqXHR, textStatus, errorCode) { //If pushing is unsuccessful.
