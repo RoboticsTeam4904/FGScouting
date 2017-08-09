@@ -15,9 +15,9 @@ router.post('/pushData', function(req, res, next) {
     console.log("starting");
     var db = req.db;
     var resultsHolder = db.get('formResults');
-    if(!req.session.currentEmail){
+    if(!(req.session.currentEmail.toString())){
         res.send('No Email');
-    }else if(req.session.currentEmail.split('@')[1] !== "nuevaschool.org"){
+    }else if(req.session.currentEmail.toString().split('@')[1] !== "nuevaschool.org"){
         res.send('Invalid Email');
     }else{
         var error = false;

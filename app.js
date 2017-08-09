@@ -34,13 +34,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(favicon(__dirname + '/public/img/favicon.ico'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({secret: process.env.SESSION_KEY, cookie:{ maxAge:360000 }}));
 
 app.use(function(req,res,next){
   req.db = db;
   next();
 });
 
-app.use(session({secret: process.env.SESSION_KEY, cookie:{ maxAge:3600 }}));
 app.use('/', index);
 
 // catch 404 and forward to error handler
