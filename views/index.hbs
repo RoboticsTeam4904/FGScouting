@@ -5,21 +5,22 @@
     <h2>Team 4904's 2017 Stand Scouting</h2>
     <!--Before Match-->
     <strong class="header">Before Match</strong></br>
-    <strong class="question lineAnswer">Name: *</strong> <input class="dynamic" type="text" name="username" required/ >
+    <strong class="question lineAnswer">Name: *</strong> </br><input class="dynamic" type="text" name="username" required/ >
     </br>
-    <strong class="question lineAnswer">Team Number: *</strong> <input class="dynamic" type="number" min="0" name="teamNumber" required/>
+    <strong class="question lineAnswer" >Team Number: *</strong> </br><input class="dynamic" type="number" min="0" name="teamNumber" required/>
     </br>
-    <strong class="question lineAnswer">Match Number: *</strong> <input class="dynamic" type="number" min="0" name="matchNumber" required/>
+    <strong class="question lineAnswer">Match Number: *</strong></br> <input class="dynamic" type="number" min="0" name="matchNumber" required/>
     </br>
-    <strong class="question">Is their robot present? *</strong>
+    <strong class="question"><Is their robot present? *</strong>
     </br>
-    <input type="radio" name="presence" value="no" checked required> No
+    <input type="radio" name="presence" value="yes" checked required> Yes
     </br>
-    <input type="radio" name="presence" value="yes"> Yes
+    <input type="radio" name="presence" value="no"> No
     </br>
     </br>
     <!-- AUTONOMOUS -->
-    <strong class="header">Auton</strong></br>
+    <strong class="header">Auton</strong>
+    </br>
     <div id="wrapper">
         <img src="/images/2017fielddiagram.png" alt="Field Diagram" class="fielddiagram" />
         </br>
@@ -36,9 +37,9 @@
     <!-- Auton Fuel Status -->
     <strong class="question">Shoots Fuel? *</strong>
     </br>
-    <input type="radio" name="autonFuelStatus" value="no" checked required> No
-    </br>
     <input type="radio" name="autonFuelStatus" value="yes"> Yes
+    </br>
+    <input type="radio" name="autonFuelStatus" value="no" checked required> No
     </br>
     <!-- Auton High Goals -->
     <strong class="question">Number of High Goals Scored:</strong><input class="dynamic" type="number" name="autonHighGoals" />
@@ -48,7 +49,7 @@
     <!-- Auton Low Goals -->
     <strong class="question">Number of Low Goals Scored:</strong><input class="dynamic" type="number" name="autonLowGoals" />
     </br>
-    <em class="subtext">The TOTAL number of points SCORED by balls being put into low goal NOT total number of balls (fuel).</em>
+    <em class="subtext">The TOTAL number of points SCORED by balls being </br>put into low goal NOT total number of balls (fuel).</em>
     </br>
     <!-- Auton Gears -->
     <strong class="question">Auton Gears:</strong>
@@ -60,8 +61,10 @@
     <input type="radio" name="autonGears" value="activeGear"> Actively places gear, pilot lifts.
     </br>
     <input type="radio" name="autonGears" value="doubleGear"> Places two gears.
-    <br><button name="submit" type="button" id="submitData" >Submit Form</button></br>
-    <button type="button" id="clearForm">Reset Form</button></br>
+    </br>
+    </br>
+    <button name="button" class="submit" type="button" id="submitData" >Submit Form</button>
+    </br>
+    <button type="button" class="submit" id="clearForm">Reset Form</button>
+     </br>
 </form>
-<button type="button" id="submitData">Submit Form</button></br>
-<button type="button" id="clearForm">Reset Form</button></br>
