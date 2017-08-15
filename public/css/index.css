@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Arvo');
 body {
-    font-family: 'Arvo', sans-serif;
+    font-family: 'Arvo', serif;
     font-weight:100;
 }
 html{
@@ -61,6 +61,7 @@ form {
 
 #wrapper {
     width: 50%;
+    margin-top: 10px;
 }
 
 .fielddiagram {
@@ -69,25 +70,47 @@ form {
 }
 
 .subtext {
-    font-size: 14px;
+    font-size: 0.7em;
 }
 
 .header {
-    font-size: 24px;
-    margin: 0 0 10px 0;
+    font-size: 26px;
+    margin: 0 0 10px -30px;
     text-decoration: underline; 
 }
+
 h2{
-  margin: 0 0 20px 0;
+  margin: 10px 0 20px 0;
+  margin-bottom: 10px;
 }
 .question{
-  font-weight: normal;
-  padding-top: 1%;
+  font-weight: 600;
+  padding-top: 2%;
   display: inline-block;
+  font-size: 1.1em;
+  margin-bottom: 2.5px;
 }
 .lineAnswer {
   text-decoration: none;
   padding-bottom: :10%;
+}
+
+input[class="dynamic"]{
+  width: 100%;
+  padding: 6px 20px;
+  margin-top: 10px;
+}
+
+input[type="radio"]{
+  margin-bottom: 10px;
+}
+
+button{
+  font-size: 13px;
+}
+
+#radio{
+  font-size: 16.5px;
 }
 
 
