@@ -1,5 +1,6 @@
 var currentFormNumber = 0;
 var dataName = "form";
+var signedIn = false;
 // This should be changed to retrieve data from the form
 
 //Saves Data to Local Storage
@@ -38,37 +39,49 @@ function compactJson(json) {
 
 // Run when signed in.
 function onSignIn(googleUser) {
-    console.log("User logged in.");
-    var id_token = googleUser.getAuthResponse().id_token;
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/tokensignin');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-        if(xhr.responseText === "error"){
-            signOut();
-        }else{
-            alert('Signed in as ' + xhr.responseText);
-            $("#signInButton").hide();
-            $("#signOutButton").show();
-        }
-    };
-    xhr.send('idtoken=' + id_token);
+    if(!signedIn){
+        console.log("User logged in.");
+        var id_token = googleUser.getAuthResponse().id_token;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/tokensignin');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if(xhr.responseText === "error"){
+                signOut();
+            }else{
+                alert('Signed in as ' + xhr.responseText);
+                $("#signInButton").hide();
+                $("#signOutButton").show();
+                signedIn = true;
+            }
+        };
+        xhr.send('idtoken=' + id_token);
+    }else{
+        $("#signInButton").hide();
+        $("#signOutButton").show();
+    }
 }
 
 // Run when signed out.
 function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-  });
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/tokensignout');
-    xhr.onload = function() {
-        alert('Signed out.');
-        $("#signOutButton").hide();
+    if(signedIn){
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+      });
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/tokensignout');
+        xhr.onload = function() {
+            alert('Signed out.');
+            $("#signOutButton").hide();
+            $("#signInButton").show();
+            signedIn = false;
+        };
+        xhr.send();
+    }else{
         $("#signInButton").show();
-    };
-    xhr.send();
+        $("#signOutButton").hide();
+    }
 }
 
 $(document).ready(function() {
