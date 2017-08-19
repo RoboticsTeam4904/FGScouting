@@ -1,5 +1,6 @@
-var counter = 1;
+var currentFormNumber = 0;
 var dataName = "form";
+var signedIn = false;
 // This should be changed to retrieve data from the form
 
 //Saves Data to Local Storage
@@ -22,7 +23,7 @@ function compactJson(json) {
         for (var prop in obj) {
             // skip loop if the property is from prototype
             if (!obj.hasOwnProperty(prop)) continue;
-            if (prop == "name") {
+            if (prop === "name") {
                 name = obj[prop];
             } else {
                 object[name] = obj[prop];
@@ -32,8 +33,58 @@ function compactJson(json) {
     return object;
 }
 
-$(document).ready(function() {
+/*
+* Oauth with google logins.
+*/
 
+// Run when signed in.
+function onSignIn(googleUser) {
+    if(!signedIn){
+        console.log("User logged in.");
+        var id_token = googleUser.getAuthResponse().id_token;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/tokensignin');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if(xhr.responseText === "error"){
+                signOut();
+            }else{
+                $("#signInButton").hide();
+                $("#signOutButton").show();
+                alert('Signed in as ' + xhr.responseText);
+                signedIn = true;
+            }
+        };
+        xhr.send('idtoken=' + id_token);
+    }else{
+        $("#signInButton").hide();
+        $("#signOutButton").show();
+    }
+}
+
+// Run when signed out.
+function signOut() {
+    if(signedIn){
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+      });
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/tokensignout');
+        xhr.onload = function() {
+            $("#signOutButton").hide();
+            $("#signInButton").show();
+            alert('Signed out.');
+            signedIn = false;
+        };
+        xhr.send();
+    }else{
+        $("#signInButton").show();
+        $("#signOutButton").hide();
+    }
+}
+
+$(document).ready(function() {
     // Grab the required form fields
     var requiredFields = [];
     $("#mainform :input").each(function(){
@@ -47,13 +98,18 @@ $(document).ready(function() {
     */
 
     //Clear outstanding local storage.
-    if(localStorage.length != 0){
+    if(localStorage.length !== 0){
         if(confirm('It looks like you have other data locally saved on this browser. Would you like us to clear this data?')){
             localStorage.clear();
         }
     }
+    //Set Offline Status
     Offline.check();
     var cachedConnectionStatus = Offline.state;
+
+    //Hide Buttons
+    $("#signOutButton").hide();
+    $("#signInButton").show();
 
     /*
     * Repetitive Checks
@@ -62,13 +118,13 @@ $(document).ready(function() {
     // Every 1 Second, check connection. If connected, push the data to the cloud.
     setInterval(function(){
         Offline.check();
-        if(Offline.state == 'up'){ //If connected
+        if(Offline.state === 'up'){ //If connected
             //If there's data.
             if(localStorage.length > 0){ 
-                pushData();
+                pushData(false);
             }
             cachedConnectionStatus = 'up';
-        }else if(Offline.state == 'down' && cachedConnectionStatus == 'up'){ //If not connected
+        }else if(Offline.state === 'down' && cachedConnectionStatus === 'up'){ //If not connected
             console.log("Connection Lost");
             cachedConnectionStatus = 'down';
         }
@@ -86,7 +142,7 @@ $(document).ready(function() {
         for(var key in currentFormJS){
             if(currentFormJS.hasOwnProperty){
                 // If the name of the current form is in the requiredFields
-                if(requiredFields.indexOf(currentFormJS[key].name) > -1 && currentFormJS[key].value == ""){
+                if(requiredFields.indexOf(currentFormJS[key].name) > -1 && currentFormJS[key].value === ""){
                     fieldsUnfilled = true;
                 }
             }
@@ -97,10 +153,9 @@ $(document).ready(function() {
         }else{
             Offline.check();
             // If Connected else Not-Connected
-            if(Offline.state == 'up'){
+            if(Offline.state === 'up'){
                 saveCurrentForm();
-                pushData();
-                $("#mainform")[0].reset();
+                pushData(true);
                 console.log("Form Pushed");
             }else{ 
                 alert('Connection not Found. Saving form...');
@@ -112,6 +167,10 @@ $(document).ready(function() {
     $("#clearForm").on('click', function() {
         $("#mainform")[0].reset();
     });
+    //Signs out of google
+    $("#signout").on('click', function() {
+        signOut();
+    });
 
     /*
     * Functions
@@ -119,31 +178,39 @@ $(document).ready(function() {
 
     //Save Current Form
     function saveCurrentForm(){
-        var name = dataName + counter.toString();
+        var name = dataName + currentFormNumber.toString();
         saveN($("#mainform").serializeArray(), name);
-        counter++;
+        currentFormNumber++;
     }
     //Push All Data
-    function pushData() { //TODO: Check for connectivity before running.
+    function pushData(alertUser) {
         var error = false;
-        for (var i = (counter-1); i >= 1; i--) {
-            var data = JSON.parse(get('form', i));
-            var request = $.ajax({
-                type: 'POST',
-                url: '/pushData',
-                data: data
-            });
-            request.done(function(response) { //If pushing is successful.
-                console.log("Data successfully pushed.");
-            });
-            request.fail(function(jqXHR, textStatus) { //If pushing is unsuccessful.
-                if(!error){
-                    alert("Error while pushing. Please reach out to a qualified individual for assistance. Error Message: " + textStatus);
-                    error = true;
-                }
-            });
+        var dataArray = [];
+        for (var i = 0; i < currentFormNumber; i++) {
+            dataArray.push(get('form', i));
         }
-        counter = 1;
-        localStorage.clear();
+        dataArray = JSON.stringify(dataArray);
+        var request = $.ajax({
+            type: 'POST',
+            url: '/pushData',
+            data: {
+                content: dataArray
+            },
+        });
+        request.done(function(response) { //If pushing is successful.
+            alert(response);
+            currentFormNumber = 0;
+            localStorage.clear();
+        });
+        request.fail(function(jqXHR, textStatus, errorCode) { //If pushing is unsuccessful.
+            if(!error){
+                if(alertUser){
+                    alert("Error: " + errorCode.toLowerCase() + ". Make sure you are logged into your Nueva email. Otherwise, please reach out to a qualified individual for assistance.");
+                }else{
+                    console.log("Error: " + errorCode.toLowerCase() + ". Make sure you are logged into your Nueva email. Otherwise, please reach out to a qualified individual for assistance.");
+                }
+                error = true;
+            }
+        });
     }
 });

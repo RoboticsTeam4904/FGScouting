@@ -1,6 +1,10 @@
-<script type="text/javascript" src="/js/save.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script><script type="text/javascript" src="/js/save.js"></script>
+<meta name="google-signin-client_id" content="692884782115-u4o2n8dco40hjqa18b1agl9492m05l1j.apps.googleusercontent.com">
 <script src="/js/offline.min.js"></script>
 <link rel="stylesheet" href="/css/index.css"></link>
+
+<div id="signInButton" class="g-signin2" data-onsuccess="onSignIn"></div>
+<button type="button" id="signOutButton" onclick="signOut()">Sign Out</button>
 <form id="mainform">
     <h2>Team 4904's 2017 Stand Scouting</h2>
     <!--Before Match-->
@@ -25,7 +29,7 @@
     <strong class="header">Auton</strong>
     </br>
     <div id="wrapper">
-        <img src="/images/2017fielddiagram.png" alt="Field Diagram" class="fielddiagram" />
+        <img src="/img/2017fielddiagram.png" alt="Field Diagram" class="fielddiagram" />
         </br>
     </div>
     <!-- Baseline Crossing -->
