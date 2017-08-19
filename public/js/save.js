@@ -49,9 +49,9 @@ function onSignIn(googleUser) {
             if(xhr.responseText === "error"){
                 signOut();
             }else{
-                alert('Signed in as ' + xhr.responseText);
                 $("#signInButton").hide();
                 $("#signOutButton").show();
+                alert('Signed in as ' + xhr.responseText);
                 signedIn = true;
             }
         };
@@ -72,9 +72,9 @@ function signOut() {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/tokensignout');
         xhr.onload = function() {
-            alert('Signed out.');
             $("#signOutButton").hide();
             $("#signInButton").show();
+            alert('Signed out.');
             signedIn = false;
         };
         xhr.send();
