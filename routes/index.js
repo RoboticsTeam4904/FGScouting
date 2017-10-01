@@ -12,7 +12,6 @@ router.get('/', function(req, res) {
     });
 });
 router.post('/pushData', function(req, res, next) {
-    console.log("starting");
     var db = req.db;
     var resultsHolder = db.get('formResults');
     if(!(req.session.currentEmail)){
