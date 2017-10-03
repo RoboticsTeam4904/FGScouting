@@ -1,29 +1,34 @@
 <script src="https://apis.google.com/js/platform.js" async defer></script><script type="text/javascript" src="/js/save.js"></script>
 <meta name="google-signin-client_id" content="692884782115-u4o2n8dco40hjqa18b1agl9492m05l1j.apps.googleusercontent.com">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="/js/offline.min.js"></script>
 <link rel="stylesheet" href="/css/index.css"></link>
 
 <div id="signInButton" class="g-signin2" data-onsuccess="onSignIn"></div>
-<button type="button" id="signOutButton" onclick="signOut()">Sign Out</button>
+<button type="button" class ="submit" id="signOutButton" onclick="signOut()">Sign Out</button>
 <form id="mainform">
     <h2>Team 4904's 2017 Stand Scouting</h2>
     <!--Before Match-->
-    <strong class="header">Before Match</strong></br>
-    <strong class="question lineAnswer">Name: *</strong> <input class="dynamic" type="text" name="username" required/>
+    <strong class="header">Before Match</strong>
     </br>
-    <strong class="question lineAnswer">Team Number: *</strong> <input class="dynamic" type="number" min="0" name="teamNumber" required/>
+    <strong class="question lineAnswer">Name: *</strong> </br><input id="name" class="dynamic" type="text" name="username" placeholder="your name" required/ >
     </br>
-    <strong class="question lineAnswer">Match Number: *</strong> <input class="dynamic" type="number" min="0" name="matchNumber" required/>
+    <strong class="question lineAnswer" >Team Number: *</strong> </br><input class="dynamic" type="number" placeholder="0" min="0" name="teamNumber" required/>
+    </br>
+    <div>
+    <strong class="question lineAnswer">Match Number: *</strong></br> <input class="dynamic" placeholder="0" type="number" min="0" name="matchNumber" required/>
     </br>
     <strong class="question">Is their robot present? *</strong>
     </br>
-    <input type="radio" name="presence" value="no" checked required> No
-    </br>
-    <input type="radio" name="presence" value="yes"> Yes
-    </br>
-    </br>
+    <div id="radio">
+        <input type="radio" name="presence" value="yes" checked required> Yes
+        </br>
+        <input type="radio" name="presence" value="no"> No
+        </br>
+    </div>
     <!-- AUTONOMOUS -->
-    <strong class="header">Auton</strong></br>
+    <strong class="header">Auton</strong>
+    </br>
     <div id="wrapper">
         <img src="/img/2017fielddiagram.png" alt="Field Diagram" class="fielddiagram" />
         </br>
@@ -31,39 +36,53 @@
     <!-- Baseline Crossing -->
     <strong class="question">Baseline Crossing? *</strong>
     </br>
-    <input type="radio" name="baselineCrossing" value="still" checked required> Does not move.
-    </br>
-    <input type="radio" name="baselineCrossing" value="move"> Moves, doesn't cross baseline.
-    </br>
-    <input type="radio" name="baselineCrossing" value="crosses"> Crosses the Baseline.
-    </br>
+    <div id="radio">
+        <input type="radio" name="baselineCrossing" value="still" checked required> Does not move.
+        </br>
+        <input type="radio" name="baselineCrossing" value="move"> Moves, doesn't cross baseline.
+        </br>
+        <input type="radio" name="baselineCrossing" value="crosses"> Crosses the Baseline.
+        </br>
+    </div>
     <!-- Auton Fuel Status -->
     <strong class="question">Shoots Fuel? *</strong>
     </br>
-    <input type="radio" name="autonFuelStatus" value="no" checked required> No
-    </br>
-    <input type="radio" name="autonFuelStatus" value="yes"> Yes
-    </br>
+    <div id="radio">
+        <input type="radio" name="autonFuelStatus" value="yes"> Yes
+        </br>
+        <input type="radio" name="autonFuelStatus" value="no" checked required> No
+        </br>
+    </div>
     <!-- Auton High Goals -->
-    <strong class="question">Number of High Goals Scored:</strong><input class="dynamic" type="number" name="autonHighGoals" />
+    <strong class="question">Number of High Goals Scored:</strong>
     </br>
     <em class="subtext">Amount of fuel scored in the boiler, not the amount of points scored from shooting. Estimate based on the boiler count on the scoreboard.</em>
     </br>
+    <input class="dynamic" type="number" placeholder="0" min="0" name="autonHighGoals" />
+    </br>
     <!-- Auton Low Goals -->
-    <strong class="question">Number of Low Goals Scored:</strong><input class="dynamic" type="number" name="autonLowGoals" />
+    <strong class="question">Number of Low Goals Scored:</strong>
     </br>
     <em class="subtext">The TOTAL number of points SCORED by balls being put into low goal NOT total number of balls (fuel).</em>
+    </br>
+    <input class="dynamic" type="number" placeholder="0" min="0" name="autonLowGoals" />
     </br>
     <!-- Auton Gears -->
     <strong class="question">Auton Gears:</strong>
     </br>
-    <input type="radio" name="autonGears" value="fail" checked> Tries to score, but fails.
+    <div id="radio">
+        <input type="radio" name="autonGears" value="fail" checked> Tries to score, but fails.
+        </br>
+        <input type="radio" name="autonGears" value="passiveGear"> Passively places gear, pilot lifts.
+        </br>
+        <input type="radio" name="autonGears" value="activeGear"> Actively places gear, pilot lifts.
+        </br>
+        <input type="radio" name="autonGears" value="doubleGear"> Places two gears.
+        </br>
+    </div>
     </br>
-    <input type="radio" name="autonGears" value="passiveGear"> Passively places gear, pilot lifts.
+    <button name="button" class="submit" type="button" id="submitData" >Submit Form</button>
     </br>
-    <input type="radio" name="autonGears" value="activeGear"> Actively places gear, pilot lifts.
-    </br>
-    <input type="radio" name="autonGears" value="doubleGear"> Places two gears.
+    <button type="button" class="submit" id="clearForm">Reset Form</button>
+     </br>
 </form>
-<button type="button" id="submitData">Submit Form</button></br>
-<button type="button" id="clearForm">Reset Form</button></br>
