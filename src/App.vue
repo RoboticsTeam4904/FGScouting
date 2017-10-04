@@ -76,6 +76,7 @@ export default {
       }
     },
     signIn: function() {
+      this.signInErrorMessage = ''
       this.googleAuthObject.signIn().then(function(){
         this.updateSignInStatus(true)
       }.bind(this), function(){
@@ -85,9 +86,14 @@ export default {
     updateSignInStatus: function(isSignedIn) {
       this.isSignedIn = isSignedIn
       if (isSignedIn && this.googleAuthObject.currentUser.get().hasGrantedScopes('https://www.googleapis.com/auth/spreadsheets')) {
-        this.googleUser = this.googleAuthObject.currentUser.get();
-        this.applicationStatus = 'scouting'
-        console.log(this.googleUser.getBasicProfile().getName())
+        if( this.googleAuthObject.currentUser.get().getBasicProfile().getEmail().split('@')[1]==='nuevaschool.org' ) {
+          this.googleUser = this.googleAuthObject.currentUser.get();
+          this.applicationStatus = 'scouting'
+        }
+        else {
+          this.googleAuthObject.signOut()
+          this.signInErrorMessage='You must be a member of the "nuevaschool.org" domain to use this application.'
+        }
       }
     }
   }

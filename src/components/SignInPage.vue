@@ -7,13 +7,16 @@
     <div class="mshadow button" @click="callback">
       Sign in with Google
     </div>
+    <div class='errormessage'>
+      {{errorMessage}}
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'signinpage',
-  props: ['callback'],
+  props: ['callback', 'errorMessage'],
   data() {
     return {
     }
@@ -42,6 +45,12 @@ export default {
   padding-right: 50px;
   text-align: center;
   max-width: 700px;
+}
+.errormessage {
+  color: white;
+  margin-top: 22px;
+  max-width: 400px;
+  text-align: center;
 }
 .button {
   background-color: #4d83c4;
