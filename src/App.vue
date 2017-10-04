@@ -3,7 +3,7 @@
     <Loader v-if="applicationStatus==='initializing'"></Loader>
     <ErrorPage v-if="applicationStatus==='fatalError'" :text="failureText"></ErrorPage>
     <SignInPage v-if="applicationStatus==='signIn'" :errorMessage="signInErrorMessage" :callback="signIn"></SignInPage>
-    <ScoutingForm v-if="applicationStatus==='scouting'"></ScoutingForm>
+    <ScoutingForm v-if="applicationStatus==='scouting'" :signOut="signOut"></ScoutingForm>
   </span>
 </template>
 
@@ -49,11 +49,15 @@ export default {
           gapi.client.init({
             'apiKey': 'AIzaSyA4HBGkcCkWXXwOkKB0jdPqIaSCOTenR-k',
             'clientId': '692884782115-u4o2n8dco40hjqa18b1agl9492m05l1j.apps.googleusercontent.com',
-            'scope': 'https://www.googleapis.com/auth/spreadsheets'
+            'scope': 'https://www.googleapis.com/auth/spreadsheets',
           }).then(function () {
             this.googleAuthObject = gapi.auth2.getAuthInstance();
             this.isConnected = true;
             this.applicationStatus = 'signIn';
+            if (this.googleAuthObject.currentUser.get().getBasicProfile()){
+              this.isSignedIn = true
+              this.applicationStatus = 'scouting'
+            }
           }.bind(this));
         }
       }
@@ -84,17 +88,28 @@ export default {
       }.bind(this))
     },
     updateSignInStatus: function(isSignedIn) {
-      this.isSignedIn = isSignedIn
       if (isSignedIn && this.googleAuthObject.currentUser.get().hasGrantedScopes('https://www.googleapis.com/auth/spreadsheets')) {
-        if( this.googleAuthObject.currentUser.get().getBasicProfile().getEmail().split('@')[1]==='nuevaschool.org' ) {
-          this.googleUser = this.googleAuthObject.currentUser.get();
+        if(this.googleAuthObject.currentUser.get().getBasicProfile().getEmail().split('@')[1]==='nuevaschool.org' ) {
+          this.googleUser = this.googleAuthObject.currentUser.get()
           this.applicationStatus = 'scouting'
+          this.isSignedIn = true;
         }
         else {
           this.googleAuthObject.signOut()
           this.signInErrorMessage='You must be a member of the "nuevaschool.org" domain to use this application.'
+          this.isSignedIn = false;
         }
       }
+      else {
+        this.googleAuthObject.signOut()
+        this.isSignedIn = false;
+      }
+    },
+    signOut: function() {
+      this.googleAuthObject.signOut().then(function(){
+        this.isSignedIn = false
+        this.applicationStatus = 'signIn'
+      }.bind(this))
     }
   }
 }

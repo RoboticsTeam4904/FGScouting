@@ -49,7 +49,9 @@ export default {
 .errormessage {
   color: white;
   margin-top: 22px;
-  max-width: 400px;
+  max-width: 500px;
+  padding-left: 50px;
+  padding-right: 50px;
   text-align: center;
 }
 .button {
@@ -62,6 +64,7 @@ export default {
   margin-top: 20px;
   width: 220px;
   border-radius: 20px;
+  user-select: none;
 }
 .button:active {
   background-color: #3e77bb;

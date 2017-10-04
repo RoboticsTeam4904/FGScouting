@@ -1,12 +1,14 @@
 <template>
   <div class="container">
     <div class="error">Unimplemented</div>
+    <div class="button mshadow" @click="signOut">Sign Out</div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'scoutingform',
+  props: ['signOut'],
   data() {
     return {
     }
@@ -26,7 +28,7 @@ export default {
 .error {
   color: #fff;
   text-transform: uppercase;
-  font-size: 3rem;
+  font-size: 2rem;
   margin-bottom: 1rem;
 }
 .message {
@@ -36,5 +38,20 @@ export default {
   padding-right: 50px;
   text-align: center;
   max-width: 700px;
+}
+.button {
+  background-color: #4d83c4;
+  height: 40px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  user-select: none;
+  width: 220px;
+  border-radius: 20px;
+}
+.button:active {
+  background-color: #3e77bb;
 }
 </style>
