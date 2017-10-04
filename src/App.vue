@@ -50,6 +50,7 @@ export default {
             'apiKey': 'AIzaSyA4HBGkcCkWXXwOkKB0jdPqIaSCOTenR-k',
             'clientId': '692884782115-u4o2n8dco40hjqa18b1agl9492m05l1j.apps.googleusercontent.com',
             'scope': 'https://www.googleapis.com/auth/spreadsheets',
+            'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4']
           }).then(function () {
             this.googleAuthObject = gapi.auth2.getAuthInstance();
             this.isConnected = true;
@@ -57,16 +58,34 @@ export default {
             if (this.googleAuthObject.currentUser.get().getBasicProfile()){
               this.isSignedIn = true
               this.applicationStatus = 'scouting'
+              this.initializeFormData()
             }
           }.bind(this));
         }
       }
       else {
-        if (localStorage.getItem("questions") === null) {
-          this.applicationStatus = 'fatalError'
-          this.failureText = 'No local cache found, please connect your computer to the internet. Waiting for connection.'
-          this.failureType = 'init_network'
+        var db;
+        var request = indexedDB.open("fgscouting", 1);
+        request.onupgradeneeded = function(event) {
+          var db = request.result;
+          if (event.oldVersion < 1) {
+            var questionStore = db.createObjectStore("questions", { keyPath: "id" });
+          }
+          db = request.result;
         }
+        request.onsuccess = function(ev) {
+          db = request.result;
+          var tx = db.transaction("questions", "readonly");
+          var store = tx.objectStore("questions");
+          var countRequest = store.count()
+          countRequest.onsuccess = function() {
+            if (countRequest.result === 0){
+              this.applicationStatus = 'fatalError'
+              this.failureText = 'No local cache found, please connect your computer to the internet. Waiting for connection.'
+              this.failureType = 'init_network'
+            }
+          }.bind(this)
+        }.bind(this)
       }
     },
     updateConnectionStatus: function(event) {
@@ -93,6 +112,7 @@ export default {
           this.googleUser = this.googleAuthObject.currentUser.get()
           this.applicationStatus = 'scouting'
           this.isSignedIn = true;
+          this.initializeFormData()
         }
         else {
           this.googleAuthObject.signOut()
@@ -110,6 +130,16 @@ export default {
         this.isSignedIn = false
         this.applicationStatus = 'signIn'
       }.bind(this))
+    },
+    initializeFormData: function() {
+      if (this.isConnected && this.isSignedIn) {
+        gapi.client.sheets.spreadsheets.values.get({
+          spreadsheetId: '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY',
+          range: 'Questions',
+        }).then(function(response){
+          console.log(response.result)
+        })
+      }
     }
   }
 }
