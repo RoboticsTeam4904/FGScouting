@@ -30,7 +30,7 @@ export default {
   },
   mounted() {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/static/worker.js').then(function(registration) {
+      navigator.serviceWorker.register('/worker.js').then(function(registration) {
       }).catch(function(error) {
         console.error('Service worker registration failed:', error);
       });

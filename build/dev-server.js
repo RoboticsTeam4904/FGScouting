@@ -48,7 +48,7 @@ Object.keys(proxyTable).forEach(function (context) {
   }
   app.use(proxyMiddleware(options.filter || context, options))
 })
-
+app.use('/worker.js', express.static('./static/worker.js'))
 // handle fallback for HTML5 history API
 app.use(require('connect-history-api-fallback')())
 
