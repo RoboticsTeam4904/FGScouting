@@ -3,7 +3,7 @@
     <Loader v-if="applicationStatus==='initializing'"></Loader>
     <ErrorPage v-if="applicationStatus==='fatalError'" :text="failureText"></ErrorPage>
     <SignInPage v-if="applicationStatus==='signIn'" :errorMessage="signInErrorMessage" :callback="signIn"></SignInPage>
-    <ScoutingForm v-if="applicationStatus==='scouting'"></ScoutingForm>
+    <ScoutingForm v-if="applicationStatus==='scouting'" :signOut="signOut"></ScoutingForm>
   </span>
 </template>
 
@@ -49,20 +49,43 @@ export default {
           gapi.client.init({
             'apiKey': 'AIzaSyA4HBGkcCkWXXwOkKB0jdPqIaSCOTenR-k',
             'clientId': '692884782115-u4o2n8dco40hjqa18b1agl9492m05l1j.apps.googleusercontent.com',
-            'scope': 'https://www.googleapis.com/auth/spreadsheets'
+            'scope': 'https://www.googleapis.com/auth/spreadsheets',
+            'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4']
           }).then(function () {
             this.googleAuthObject = gapi.auth2.getAuthInstance();
             this.isConnected = true;
             this.applicationStatus = 'signIn';
+            if (this.googleAuthObject.currentUser.get().getBasicProfile()){
+              this.isSignedIn = true
+              this.applicationStatus = 'scouting'
+              this.initializeFormData()
+            }
           }.bind(this));
         }
       }
       else {
-        if (localStorage.getItem("questions") === null) {
-          this.applicationStatus = 'fatalError'
-          this.failureText = 'No local cache found, please connect your computer to the internet. Waiting for connection.'
-          this.failureType = 'init_network'
+        var db;
+        var request = indexedDB.open("fgscouting", 1);
+        request.onupgradeneeded = function(event) {
+          var db = request.result;
+          if (event.oldVersion < 1) {
+            var questionStore = db.createObjectStore("questions", { keyPath: "id" });
+          }
+          db = request.result;
         }
+        request.onsuccess = function(ev) {
+          db = request.result;
+          var tx = db.transaction("questions", "readonly");
+          var store = tx.objectStore("questions");
+          var countRequest = store.count()
+          countRequest.onsuccess = function() {
+            if (countRequest.result === 0){
+              this.applicationStatus = 'fatalError'
+              this.failureText = 'No local cache found, please connect your computer to the internet. Waiting for connection.'
+              this.failureType = 'init_network'
+            }
+          }.bind(this)
+        }.bind(this)
       }
     },
     updateConnectionStatus: function(event) {
@@ -84,16 +107,38 @@ export default {
       }.bind(this))
     },
     updateSignInStatus: function(isSignedIn) {
-      this.isSignedIn = isSignedIn
       if (isSignedIn && this.googleAuthObject.currentUser.get().hasGrantedScopes('https://www.googleapis.com/auth/spreadsheets')) {
-        if( this.googleAuthObject.currentUser.get().getBasicProfile().getEmail().split('@')[1]==='nuevaschool.org' ) {
-          this.googleUser = this.googleAuthObject.currentUser.get();
+        if(this.googleAuthObject.currentUser.get().getBasicProfile().getEmail().split('@')[1]==='nuevaschool.org' ) {
+          this.googleUser = this.googleAuthObject.currentUser.get()
           this.applicationStatus = 'scouting'
+          this.isSignedIn = true;
+          this.initializeFormData()
         }
         else {
           this.googleAuthObject.signOut()
           this.signInErrorMessage='You must be a member of the "nuevaschool.org" domain to use this application.'
+          this.isSignedIn = false;
         }
+      }
+      else {
+        this.googleAuthObject.signOut()
+        this.isSignedIn = false;
+      }
+    },
+    signOut: function() {
+      this.googleAuthObject.signOut().then(function(){
+        this.isSignedIn = false
+        this.applicationStatus = 'signIn'
+      }.bind(this))
+    },
+    initializeFormData: function() {
+      if (this.isConnected && this.isSignedIn) {
+        gapi.client.sheets.spreadsheets.values.get({
+          spreadsheetId: '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY',
+          range: 'Questions',
+        }).then(function(response){
+          console.log(response.result)
+        })
       }
     }
   }
