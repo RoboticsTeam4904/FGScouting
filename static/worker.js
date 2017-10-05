@@ -5,25 +5,23 @@ self.addEventListener('install', function(evt) {
 });
 
 self.addEventListener('fetch', function(evt) {
-  evt.respondWith(fromNetwork(evt.request, 400).catch(function () {
-    return fromCache(evt.request);
-  }));
+  evt.respondWith(navigator.onLine ? fromNetwork(evt.request) : fromCache(evt.request))
 });
 
 function precache() {
   return caches.open(CACHE).then(function (cache) {
-    return cache.addAll([
+    return thing = cache.addAll([
       '/app.js',
-      '/index.html'
+      '/',
+      '/static/Arvo.woff2',
+      '/static/logo.png'
     ]);
   });
 }
 
-function fromNetwork(request, timeout) {
+function fromNetwork(request) {
   return new Promise(function (fulfill, reject) {
-    var timeoutId = setTimeout(reject, timeout)
     fetch(request).then(function (response) {
-      clearTimeout(timeoutId);
       fulfill(response);
     }, reject);
   });
