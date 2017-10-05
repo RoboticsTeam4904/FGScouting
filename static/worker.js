@@ -10,7 +10,7 @@ self.addEventListener('fetch', function(evt) {
 
 function precache() {
   return caches.open(CACHE).then(function (cache) {
-    return thing = cache.addAll([
+    return cache.addAll([
       '/app.js',
       '/',
       '/static/Arvo.woff2',
