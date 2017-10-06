@@ -8,6 +8,15 @@ self.addEventListener('fetch', function(evt) {
   evt.respondWith(navigator.onLine ? fromNetwork(evt.request) : fromCache(evt.request))
 });
 
+self.addEventListener('sync', function(event) {
+  if (event.tag == 'dbPush') {
+    event.waitUntil(dbPush());
+  }
+  if (event.tag == 'dbPull') {
+    event.waitUntil(dbPull());
+  }
+});
+
 function precache() {
   return caches.open(CACHE).then(function (cache) {
     return cache.addAll([
@@ -24,6 +33,28 @@ function fromNetwork(request) {
     fetch(request).then(function (response) {
       fulfill(response);
     }, reject);
+  });
+}
+
+function dbPush() {
+  return new Promise(function (fulfill, reject) {
+    if (navigator.onLine) {
+      fulfill()
+    }
+    else {
+      reject()
+    }
+  });
+}
+
+function dbPull() {
+  return new Promise(function (fulfill, reject) {
+    if (navigator.onLine){
+      fulfill()
+    }
+    else {
+      reject()
+    }
   });
 }
 
