@@ -1,4 +1,5 @@
 var CACHE = 'network-or-cache';
+var SHEET = '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY';
 
 self.addEventListener('install', function(evt) {
   evt.waitUntil(precache());
@@ -38,10 +39,10 @@ function fromNetwork(request) {
 
 function dbPush() {
   return new Promise(function (fulfill, reject) {
+    console.log('push')
     if (navigator.onLine) {
       fulfill()
-    }
-    else {
+    } else {
       reject()
     }
   });
@@ -50,9 +51,52 @@ function dbPush() {
 function dbPull() {
   return new Promise(function (fulfill, reject) {
     if (navigator.onLine){
-      fulfill()
-    }
-    else {
+      var db, token
+      var request = indexedDB.open("fgscouting", 1);
+      request.onsuccess = (ev) => {
+        db = request.result
+        var tx = db.transaction("tokens", "readonly")
+        var store = tx.objectStore("tokens")
+        var getTokens = store.get(1)
+        getTokens.onsuccess = (event) => {
+          token = getTokens.result.token
+          fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`).then((response) => {
+            return response.json()
+          }).then((value) => {
+            if(!value.error) {
+              fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/Questions?access_token=${token}`).then((response) => {
+                return response.json()
+              }).then((value) => {
+                var tx = db.transaction("questions", "readwrite")
+                var store = tx.objectStore("questions")
+                var clearQuestions = store.clear()
+                clearQuestions.onsuccess = function(event) {
+                  var addQuestion = () => {
+                    if (i<data.length) {
+                      store.add(data[i]).onsuccess = addQuestion;
+                      ++i;
+                    } else {
+                      fulfill()
+                    }
+                  }
+                  addQuestion()
+                }
+                clearQuestions.onerror = function(event) {
+                  reject()
+                }
+                var data = value.values.slice(1)
+                var i = 0;
+              })
+            } else {
+              reject()
+            }
+          })
+        }
+        getTokens.onerror = () => {
+          reject()
+        }
+      }
+    } else {
       reject()
     }
   });

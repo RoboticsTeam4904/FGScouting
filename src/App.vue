@@ -49,7 +49,7 @@ export default {
       request.onupgradeneeded = function(event) {
         this.db = request.result;
         if (event.oldVersion < 1) {
-          var questionStore = this.db.createObjectStore("questions", { keyPath: "id" });
+          var questionStore = this.db.createObjectStore("questions", { keyPath: "id", autoIncrement: true});
           var tokenStore = this.db.createObjectStore("tokens", { keyPath: "id" });
         }
         this.db = request.result;
@@ -149,12 +149,17 @@ export default {
       if (this.isConnected && this.isSignedIn) {
         var tx = this.db.transaction("tokens", "readwrite");
         var store = tx.objectStore("tokens");
-        var tokenRequest = store.count()
-        tokenRequest.onsuccess = function() {
+        var clearTokens = store.clear()
+        clearTokens.onsuccess = function(value) {
+          store.add({
+            token: this.googleAuthObject.currentUser.get().getAuthResponse(true).access_token,
+            id: 1
+          }).onsuccess = function() {
+            navigator.serviceWorker.ready.then(function(swRegistration) {
+              return swRegistration.sync.register('dbPull');
+            })
+          }.bind(this)
         }.bind(this)
-        navigator.serviceWorker.ready.then(function(swRegistration) {
-          return swRegistration.sync.register('dbPull');
-        })
       }
     }
   }
