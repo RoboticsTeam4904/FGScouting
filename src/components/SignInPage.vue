@@ -65,6 +65,8 @@ export default {
   width: 220px;
   border-radius: 20px;
   user-select: none;
+  cursor: pointer;
+  cursor: hand;
 }
 .button:active {
   background-color: #3e77bb;
