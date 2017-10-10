@@ -1,5 +1,6 @@
 var CACHE = 'network-or-cache';
 var SHEET = '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY';
+var CLIENT = ''
 
 self.addEventListener('install', function(evt) {
   evt.waitUntil(precache());
@@ -10,6 +11,7 @@ self.addEventListener('fetch', function(evt) {
 });
 
 self.addEventListener('sync', function(event) {
+  CLIENT = event.clientId
   if (event.tag == 'dbPush') {
     event.waitUntil(dbPush());
   }
@@ -24,7 +26,12 @@ function precache() {
       '/app.js',
       '/',
       '/static/Arvo.woff2',
-      '/static/logo.png'
+      '/static/logo.png',
+      '/static/ionicons.min.css',
+      '/static/ionicons.eot',
+      '/static/ionicons.svg',
+      '/static/ionicons.ttf',
+      '/static/ionicons.woff'
     ]);
   });
 }
@@ -76,7 +83,21 @@ function dbPull() {
                       store.add(data[i]).onsuccess = addQuestion;
                       ++i;
                     } else {
-                      fulfill()
+                      var updateView = async function () {
+                        var client = await clients.matchAll({
+                          includeUncontrolled: true
+                        })
+                        client = client[0]
+                        if (!client) {
+                          fulfill()
+                        } else {
+                          client.postMessage({
+                            type: "updateQuestions"
+                          });
+                          fulfill()
+                        }
+                      }
+                      updateView()
                     }
                   }
                   addQuestion()

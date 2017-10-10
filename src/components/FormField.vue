@@ -1,0 +1,141 @@
+<template>
+  <div class="field">
+    <div v-if="data[2]==='ShortText' || data[2]==='LongText'" class="name">
+      {{data[0]}}
+    </div>
+    <div v-else class="name nowrap">
+      {{data[0]}}
+    </div>
+    <input type="text" v-if="data[2]==='ShortText'"/>
+    <div class="checkboxcenterer" v-if="data[2]==='Boolean'">
+      <input :id="data[1]" class="styled-checkbox" type="checkbox"/>
+      <label :for="data[1]"></label>
+    </div>
+    <input type="number" v-if="data[2]==='Number'"/>
+    <ModernSelect v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(3)"></ModernSelect>
+    <div contenteditable="true" v-if="data[2]==='LongText'"></div>
+  </div>
+</template>
+
+<script>
+
+import ModernSelect from './ModernSelect'
+
+export default {
+  name: 'formfield',
+  components: {ModernSelect},
+  props: ['data'],
+  data() {
+    return {
+    }
+  }
+}
+</script>
+
+<style scoped>
+.name {
+  color: white;
+  font-size: 12px;
+}
+input[type='text'] {
+  outline: none;
+  border: none;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  transition: border 0.2s ease;
+  margin-top: 2px;
+  font-family: Arvo;
+  margin-bottom: 10px;
+  width: 100%;
+  padding-bottom: 8px;
+  padding-top: 8px;
+  background-color: transparent;
+  color: white;
+}
+input[type='text']:focus {
+  border-bottom: 2px solid rgba(0,0,0,0.3);
+}
+[contenteditable='true'] {
+  outline: none;
+  border: none;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  transition: border 0.2s ease;
+  margin-top: 2px;
+  font-family: Arvo;
+  margin-bottom: 10px;
+  width: 100%;
+  padding-bottom: 8px;
+  padding-top: 8px;
+  background-color: transparent;
+  color: white;
+  resize: none;
+  overflow: hidden;
+}
+[contenteditable='true']:focus {
+  border-bottom: 2px solid rgba(0,0,0,0.3);
+}
+input[type='number'] {
+  outline: none;
+  border: none;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  transition: border 0.2s ease;
+  margin-top: 2px;
+  font-family: Arvo;
+  margin-bottom: 10px;
+  width: 100%;
+  padding-bottom: 8px;
+  padding-top: 8px;
+  background-color: transparent;
+  color: white;
+}
+input[type='number']:focus {
+  border-bottom: 2px solid rgba(0,0,0,0.3);
+}
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+}
+.nowrap {
+  display: inline-block;
+}
+input[type="checkbox"] {
+  display: none;
+}
+input[type="checkbox"] + label:before {
+  content: 'No';
+  color: white;
+  display: inline-block;
+  width: 20px;
+  font-size: 12px;
+  border-radius: 3px;
+  height: 20px;
+  display: flex;
+  background-color: rgba(0,0,0,0.1);
+  justify-content: center;
+  align-items: center;
+  padding: 7px;
+  margin: 7px;
+  margin-left: 0;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s ease all;
+}
+
+input[type="checkbox"]:checked + label:before {
+  content: 'Yes';
+  background-color: rgba(0,0,0,0.3);
+}
+input[type="checkbox"]:hover:not(:checked) + label:before{
+  background-color: rgba(0,0,0,0.2);
+}
+.checkboxcenterer {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+</style>

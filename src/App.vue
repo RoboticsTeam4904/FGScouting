@@ -3,7 +3,7 @@
     <Loader v-if="applicationStatus==='initializing'"></Loader>
     <ErrorPage v-if="applicationStatus==='fatalError'" :text="failureText"></ErrorPage>
     <SignInPage v-if="applicationStatus==='signIn'" :errorMessage="signInErrorMessage" :callback="signIn"></SignInPage>
-    <ScoutingForm v-if="applicationStatus==='scouting'" :signOut="signOut"></ScoutingForm>
+    <ScoutingForm v-if="applicationStatus==='scouting'" :signOut="signOut" :questions="questions"></ScoutingForm>
   </span>
 </template>
 
@@ -27,13 +27,20 @@ export default {
       googleUser: null,
       isSignedIn: false,
       db: null,
-      dbStatus: null
+      dbStatus: null,
+      questions: []
     }
   },
   mounted() {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/worker.js').then(function(registration) {
-      }).catch(function(error) {
+        navigator.serviceWorker.addEventListener('message', function(event) {
+          if (event.data.type === 'updateQuestions') {
+            this.applicationStatus = 'scouting'
+            this.updateQuestions()
+          }
+        }.bind(this));
+      }.bind(this)).catch(function(error) {
         console.error('Service worker registration failed:', error);
       });
     } else {
@@ -83,12 +90,13 @@ export default {
             }).then(function () {
               this.googleAuthObject = gapi.auth2.getAuthInstance();
               this.isConnected = true;
-              this.applicationStatus = 'signIn';
               if (this.googleAuthObject.currentUser.get().getBasicProfile()){
                 this.isSignedIn = true
-                this.applicationStatus = 'scouting'
                 this.googleUser = this.googleAuthObject.currentUser.get()
                 this.initializeFormData()
+              }
+              else {
+                this.applicationStatus = 'signIn';
               }
             }.bind(this));
           }
@@ -161,6 +169,14 @@ export default {
           }.bind(this)
         }.bind(this)
       }
+    },
+    updateQuestions: function() {
+      var tx = this.db.transaction("questions", "readonly");
+      var store = tx.objectStore("questions");
+      var getQuestions = store.getAll()
+      getQuestions.onsuccess = () => {
+        this.questions = getQuestions.result
+      }
     }
   }
 }
@@ -184,6 +200,7 @@ body, html {
   margin: 0;
   box-sizing: border-box;
   background-color: #0a2634;
+  overflow-x: hidden;
 }
 
 .mshadow {
@@ -193,5 +210,11 @@ body, html {
 
 .mshadow:not(.static):hover {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #3e77bb;
 }
 </style>

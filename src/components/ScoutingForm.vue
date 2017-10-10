@@ -1,14 +1,22 @@
 <template>
   <div class="container">
-    <div class="error">Unimplemented</div>
-    <div class="button mshadow" @click="signOut">Sign Out</div>
+    <div class="navbar static mshadow"><div class="button" @click="signOut">Sign Out</div></div>
+    <div class="form mshadow static">
+      <div class="forminner">
+        <div class="heading">Team 4904 Field Scouting</div>
+        <FormField v-for="question in questions" :data="question" :key="question[0]"></FormField>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import FormField from './FormField'
+
 export default {
   name: 'scoutingform',
-  props: ['signOut'],
+  props: ['signOut', 'questions'],
+  components: {FormField},
   data() {
     return {
     }
@@ -17,11 +25,26 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  width: 100vw;
-  height: 100vh;
+.navbar {
+  background-color: #3e77bb;
+  z-index: 1000;
+  position: fixed;
+  height: 50px;
+  padding-left: 5px;
+  padding-right: 5px;
   display: flex;
-  justify-content: center;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100vw;
+}
+.container {
+  padding-top: 150px;
+  width: 100vw;
+  display: flex;
+  justify-content: flex-start;
   align-items: center;
   flex-flow: column nowrap;
 }
@@ -39,19 +62,39 @@ export default {
   text-align: center;
   max-width: 700px;
 }
+.heading {
+  color: white;
+  font-size: 20px;
+  margin-bottom: 50px;
+  width: 100%;
+  text-align: center;
+}
 .button {
-  background-color: #4d83c4;
   height: 40px;
+  cursor: pointer;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
   user-select: none;
-  width: 220px;
-  border-radius: 20px;
+  width: 80px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
 }
 .button:active {
+  background-color: rgba(0,0,0,0.3);
+}
+.button:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+.form {
   background-color: #3e77bb;
+  max-width: 700px;
+  width: 100%;
+  border-radius: 3px;
+  margin-bottom: 100px;
+}
+.forminner {
+  margin: 50px;
 }
 </style>
