@@ -1,16 +1,15 @@
 <template>
   <div class="field">
-    <div v-if="data[2]==='ShortText' || data[2]==='LongText'" class="name">
-      {{data[0]}}
-    </div>
-    <div v-else class="name nowrap">
+    <div class="name">
       {{data[0]}}
     </div>
     <input type="text" v-if="data[2]==='ShortText'"/>
-    <div class="checkboxcenterer" v-if="data[2]==='Boolean'">
+    <!--div class="checkboxcenterer" v-if="data[2]==='Boolean'">
       <input :id="data[1]" class="styled-checkbox" type="checkbox"/>
       <label :for="data[1]"></label>
-    </div>
+    </div>-->
+    <ModernRadio v-if="data[2]==='Boolean'" :options="['Yes','No']"></ModernRadio>
+    <ModernRadio v-if="data[2]==='Radio'" :options="data.slice(3)"></ModernRadio>
     <input type="number" v-if="data[2]==='Number'"/>
     <ModernSelect v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(3)"></ModernSelect>
     <div contenteditable="true" v-if="data[2]==='LongText'"></div>
@@ -20,10 +19,11 @@
 <script>
 
 import ModernSelect from './ModernSelect'
+import ModernRadio from './ModernRadio'
 
 export default {
   name: 'formfield',
-  components: {ModernSelect},
+  components: {ModernSelect, ModernRadio},
   props: ['data'],
   data() {
     return {
