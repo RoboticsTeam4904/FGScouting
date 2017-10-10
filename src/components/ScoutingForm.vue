@@ -80,6 +80,8 @@ export default {
   width: 80px;
   border-radius: 3px;
   transition: all 0.2s ease;
+  cursor: pointer;
+  cursor: hand;
 }
 .button:active {
   background-color: rgba(0,0,0,0.3);
