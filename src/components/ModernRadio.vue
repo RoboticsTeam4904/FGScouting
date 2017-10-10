@@ -1,21 +1,32 @@
 <template>
   <div class="container">
-    <div :class="selected===option ? 'option selected' : 'option'" @click="setSelected(option)" v-for="option in options">{{option}}</div>
+    <div v-if="multiple" :class="selected.indexOf(option)!=-1 ? 'option selected' : 'option'" @click="setSelected(option)" v-for="option in options">{{option}}</div>
+    <div v-if="!multiple" :class="selected===option ? 'option selected' : 'option'" @click="setSelected(option)" v-for="option in options">{{option}}</div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'modernradio',
-  props: ['options'],
+  props: ['options', 'multiple'],
   data() {
     return {
-      selected: this.$props.options[0]
+      selected: this.$props.multiple ? [] : this.$props.options[0]
     }
   },
   methods: {
     setSelected: function(item) {
-      this.selected = item
+      if (this.$props.multiple) {
+        if (this.selected.indexOf(item) != -1){
+          this.selected.splice(this.selected.indexOf(item),1)
+        }
+        else {
+          this.selected.push(item)
+        }
+      }
+      else {
+        this.selected = item
+      }
     }
   }
 }
