@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="navbar static mshadow"><div class="button" @click="signOut">Sign Out</div></div>
+    <div class="navbar static mshadow"><div class="button" @click="signOut">Sign Out</div><div class="networkstatus">{{networkStatus ? null : 'Offline'}}</div></div>
     <div class="form mshadow static">
       <div class="forminner">
         <div class="heading">Team 4904 Field Scouting</div>
@@ -15,7 +15,7 @@ import FormField from './FormField'
 
 export default {
   name: 'scoutingform',
-  props: ['signOut', 'questions'],
+  props: ['signOut', 'questions','networkStatus'],
   components: {FormField},
   data() {
     return {
@@ -83,6 +83,10 @@ export default {
   cursor: pointer;
   cursor: hand;
   background-color: rgba(0,0,0,0.1);
+}
+.networkstatus {
+  color: white;
+  margin-right: 20px;
 }
 .button:active {
   background-color: rgba(0,0,0,0.3);

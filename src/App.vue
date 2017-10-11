@@ -3,7 +3,7 @@
     <Loader v-if="applicationStatus==='initializing'"></Loader>
     <ErrorPage v-if="applicationStatus==='fatalError'" :text="failureText"></ErrorPage>
     <SignInPage v-if="applicationStatus==='signIn'" :errorMessage="signInErrorMessage" :callback="signIn"></SignInPage>
-    <ScoutingForm v-if="applicationStatus==='scouting'" :signOut="signOut" :questions="questions"></ScoutingForm>
+    <ScoutingForm :networkStatus="isConnected" v-if="applicationStatus==='scouting'" :signOut="signOut" :questions="questions"></ScoutingForm>
   </span>
 </template>
 
@@ -69,14 +69,16 @@ export default {
         countRequest.onsuccess = function() {
           if (countRequest.result === 0){
             if (!navigator.onLine) {
+              console.log(this.applicationStatus)
               this.dbStatus = false
               this.applicationStatus = 'fatalError'
               this.failureText = 'No local cache found, please connect your computer to the internet. Waiting for connection.'
               this.failureType = 'init_network'
+              console.log(this.applicationStatus)
             }
           }
           else {
-            this.dbStatus = true
+            this.updateQuestions()
           }
         }.bind(this)
         if (navigator.onLine) {
@@ -100,9 +102,6 @@ export default {
               }
             }.bind(this));
           }
-        }
-        else {
-          this.initializeFormData()
         }
       }.bind(this)
       request.onerror = function(ev) {
@@ -176,6 +175,7 @@ export default {
       var getQuestions = store.getAll()
       getQuestions.onsuccess = () => {
         this.questions = getQuestions.result
+        this.applicationStatus = 'scouting'
       }
     }
   }
