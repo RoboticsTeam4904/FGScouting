@@ -38,6 +38,11 @@ export default {
         }
       }
     }.bind(this))
+    window.addEventListener('resize', function() {
+      var width = this.$refs.slider.getBoundingClientRect().width - 64
+      var stepLength = this.$props.stepped ? width/(this.$props.steps-1) : width/(this.$props.maxValue - this.$props.minValue)
+      this.$refs.handle.style.left = `${22 + (this.$props.stepped ? this.value-this.$props.minValue : this.value)* stepLength}px`
+    }.bind(this))
     return {
       dragging: false,
       xOffset: 0,
