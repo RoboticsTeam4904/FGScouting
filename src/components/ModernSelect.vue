@@ -6,9 +6,9 @@
   <div v-else class="selections">
     <div v-on:click.stop="removeSelection(selection)" v-for="selection in selected" class="selection">{{selection}} <i class="icon ion-close-round"/></div>
   </div>
-  <div :class="collapsed ? 'arrow flipped' : 'arrow'"><i class="icon ion-ios-arrow-down"></i></div>
+  <div :class="collapsed ? 'arrow flipped' : 'arrow'"><i :class="collapsed ? 'icon ion-ios-arrow-down flip' : 'icon ion-ios-arrow-down'"></i></div>
   <div :class="collapsed ? 'menu' : 'hidden menu'">
-    <div v-for="option in options" v-if="multiple ? (selected.indexOf(option)===-1 || allowDuplicates) : option != selected" class="option" @click="setSelected(option)">
+    <div v-for="option in options" v-if="multiple ? (selected.indexOf(option)===-1 || allowDuplicates) : option != selected" :class="multiple ? 'option multiple' : 'option'" @click="setSelected(option)">
       {{option}}
     </div>
   </div>
@@ -20,13 +20,18 @@ export default {
   name: 'modernselect',
   props: ['value', 'options', 'multiple', 'allowDuplicates'],
   data() {
+    document.addEventListener('mouseup', function(event){
+      if (event.target.className!='open box' && event.target.className!='option' && event.target.className!='icon ion-ios-arrow-down flip')
+      this.collapsed = false;
+      this.helper = true;
+    }.bind(this))
     return {
       selected: this.$props.multiple ? [] : this.$props.options[0],
       collapsed: false
     }
   },
   methods: {
-    switchState: function() {
+    switchState: function(event) {
       this.collapsed = !this.collapsed
     },
     setSelected: function(item) {
@@ -47,7 +52,7 @@ export default {
 .selections {
   display: flex;
   flex-flow: row wrap;
-  max-width: 95%;
+  max-width: 92%;
 }
 .selection {
   padding: 5px;
@@ -58,6 +63,7 @@ export default {
   justify-content: center;
   flex-flow: row nowrap;
   align-items: center;
+  user-select: none;
   position: relative;
   padding-right: 21px;
 }
@@ -107,6 +113,7 @@ export default {
 .option {
   padding: 7px;
   border-top: 1px solid rgba(0,0,0,0.1);
+  user-select: none;
 }
 .menu {
   position: absolute;

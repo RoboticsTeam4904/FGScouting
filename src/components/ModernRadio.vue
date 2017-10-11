@@ -47,6 +47,7 @@ export default {
   text-align: center;
   cursor: pointer;
   transition: 0.2s ease all;
+  user-select: none;
 }
 .option.selected {
   background-color: rgba(0,0,0,0.3);

@@ -4,7 +4,7 @@
       {{data[0]}}
     </div>
     <input type="text" v-if="data[2]==='ShortText'"/>
-    <!--div class="checkboxcenterer" v-if="data[2]==='Boolean'">
+    <!--<div class="checkboxcenterer" v-if="data[2]==='Boolean'">
       <input :id="data[1]" class="styled-checkbox" type="checkbox"/>
       <label :for="data[1]"></label>
     </div>-->
@@ -14,6 +14,7 @@
     <input type="number" v-if="data[2]==='Number'"/>
     <ModernSelect v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(3)"></ModernSelect>
     <div contenteditable="true" v-if="data[2]==='LongText'"></div>
+    <ModernSlider :initialPosition="parseInt(data[6])" :stepped="data[3]!=0" :steps="parseInt(data[3])" :minValue="parseInt(data[4])" :maxValue="parseInt(data[5])" v-if="data[2]==='Slider'"></ModernSlider>
   </div>
 </template>
 
@@ -21,10 +22,11 @@
 
 import ModernSelect from './ModernSelect'
 import ModernRadio from './ModernRadio'
+import ModernSlider from './ModernSlider'
 
 export default {
   name: 'formfield',
-  components: {ModernSelect, ModernRadio},
+  components: {ModernSelect, ModernRadio, ModernSlider},
   props: ['data'],
   data() {
     return {
@@ -51,6 +53,9 @@ input[type='text'] {
   padding-top: 8px;
   background-color: transparent;
   color: white;
+}
+input[type='text'], input[type='number'], textarea {
+  box-sizing: border-box;
 }
 input[type='text']:focus {
   border-bottom: 2px solid rgba(0,0,0,0.3);

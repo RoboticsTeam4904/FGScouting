@@ -82,12 +82,13 @@ export default {
   transition: all 0.2s ease;
   cursor: pointer;
   cursor: hand;
+  background-color: rgba(0,0,0,0.1);
 }
 .button:active {
   background-color: rgba(0,0,0,0.3);
 }
-.button:hover {
-  background-color: rgba(0,0,0,0.1);
+.button:hover:not(:active) {
+  background-color: rgba(0,0,0,0.2);
 }
 .form {
   background-color: #3e77bb;
@@ -95,6 +96,14 @@ export default {
   width: 100%;
   border-radius: 3px;
   margin-bottom: 100px;
+}
+@media all and (max-width: 700px) {
+  .form {
+    margin-bottom: 0;
+  }
+  .container {
+    padding-top: 50px;
+  }
 }
 .forminner {
   margin: 50px;
