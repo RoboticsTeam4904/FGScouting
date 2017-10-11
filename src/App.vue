@@ -52,6 +52,9 @@ export default {
   },
   methods: {
     initialize: function () {
+      if (navigator.onLine) {
+        this.isConnected = true
+      }
       var request = indexedDB.open("fgscouting", 1);
       request.onupgradeneeded = function(event) {
         this.db = request.result;
