@@ -27,6 +27,7 @@ export default {
       else {
         this.selected = item
       }
+      this.$emit('input',this.selected)
     }
   }
 }

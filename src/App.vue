@@ -3,7 +3,7 @@
     <Loader v-if="applicationStatus==='initializing'"></Loader>
     <ErrorPage v-if="applicationStatus==='fatalError'" :text="failureText"></ErrorPage>
     <SignInPage v-if="applicationStatus==='signIn'" :errorMessage="signInErrorMessage" :callback="signIn"></SignInPage>
-    <ScoutingForm :networkStatus="isConnected" v-if="applicationStatus==='scouting'" :signOut="signOut" :questions="questions"></ScoutingForm>
+    <ScoutingForm @submit="submit" :networkStatus="isConnected" v-if="applicationStatus==='scouting'" :signOut="signOut" :questions="questions"></ScoutingForm>
   </span>
 </template>
 
@@ -39,6 +39,9 @@ export default {
             this.applicationStatus = 'scouting'
             this.updateQuestions()
           }
+          if (event.data.type === 'updateTokens') {
+            this.updateTokens()
+          }
         }.bind(this));
       }.bind(this)).catch(function(error) {
         console.error('Service worker registration failed:', error);
@@ -61,6 +64,7 @@ export default {
         if (event.oldVersion < 1) {
           var questionStore = this.db.createObjectStore("questions", { keyPath: "id", autoIncrement: true});
           var tokenStore = this.db.createObjectStore("tokens", { keyPath: "id" });
+          var responsesStore = this.db.createObjectStore("responses", { keyPath: "id", autoIncrement: true });
         }
         this.db = request.result;
       }
@@ -72,12 +76,10 @@ export default {
         countRequest.onsuccess = function() {
           if (countRequest.result === 0){
             if (!navigator.onLine) {
-              console.log(this.applicationStatus)
               this.dbStatus = false
               this.applicationStatus = 'fatalError'
               this.failureText = 'No local cache found, please connect your computer to the internet. Waiting for connection.'
               this.failureType = 'init_network'
-              console.log(this.applicationStatus)
             }
           }
           else {
@@ -163,6 +165,8 @@ export default {
         clearTokens.onsuccess = function(value) {
           store.add({
             token: this.googleAuthObject.currentUser.get().getAuthResponse(true).access_token,
+            expires_at: this.googleAuthObject.currentUser.get().getAuthResponse(true).expires_at,
+            name: this.googleAuthObject.currentUser.get().getBasicProfile().getName(),
             id: 1
           }).onsuccess = function() {
             navigator.serviceWorker.ready.then(function(swRegistration) {
@@ -180,6 +184,32 @@ export default {
         this.questions = getQuestions.result
         this.applicationStatus = 'scouting'
       }
+    },
+    submit: function(state){
+      var tx = this.db.transaction("responses", "readwrite");
+      var store = tx.objectStore("responses");
+      var addResponses = store.add(state).onsuccess = function() {
+        navigator.serviceWorker.ready.then(function(swRegistration) {
+          return swRegistration.sync.register('dbPush');
+        })
+      }
+    },
+    updateTokens: function() {
+      var tx = this.db.transaction("tokens", "readwrite");
+      var store = tx.objectStore("tokens");
+      var clearTokens = store.clear()
+      clearTokens.onsuccess = function(value) {
+        store.add({
+          token: this.googleAuthObject.currentUser.get().getAuthResponse(true).access_token,
+          expires_at: this.googleAuthObject.currentUser.get().getAuthResponse(true).expires_at,
+          name: this.googleAuthObject.currentUser.get().getBasicProfile().getName(),
+          id: 1
+        }).onsuccess = function() {
+          navigator.serviceWorker.ready.then(function(swRegistration) {
+            return swRegistration.sync.register('dbPush');
+          })
+        }.bind(this)
+      }.bind(this)
     }
   }
 }

@@ -4,7 +4,8 @@
     <div class="form mshadow static">
       <div class="forminner">
         <div class="heading">Team 4904 Field Scouting</div>
-        <FormField v-for="question in questions" :data="question" :key="question[0]"></FormField>
+        <FormField v-for="question in questions" :data="question" :key="question[1]" @input="(value) => { set(question[1], value) }"></FormField>
+        <div class="center"><div class="submit" @click="submit">Submit</div></div>
       </div>
     </div>
   </div>
@@ -18,7 +19,20 @@ export default {
   props: ['signOut', 'questions','networkStatus'],
   components: {FormField},
   data() {
+    var state = {}
+    for (var i=0; i<this.$props.questions.length; i++) {
+      state[this.$props.questions[1]] = null
+    }
     return {
+      state
+    }
+  },
+  methods: {
+    set: function(item,value) {
+      this.state[item] = value
+    },
+    submit: function() {
+      this.$emit('submit',this.state)
     }
   }
 }
@@ -39,6 +53,29 @@ export default {
   top: 0;
   left: 0;
   width: 100vw;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.submit {
+  color: white;
+  padding: 10px;
+  margin-bottom: 0;
+  border-radius: 3px;
+  margin-top: 15px;
+  background-color: rgba(0,0,0,0.1);
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  cursor: hand;
+}
+.submit:hover:not(:active) {
+  background-color: rgba(0,0,0,0.2);
+}
+.submit:active {
+  background-color: rgba(0,0,0,0.3);
 }
 .container {
   padding-top: 150px;
@@ -111,5 +148,6 @@ export default {
 }
 .forminner {
   margin: 50px;
+  margin-bottom: 30px;
 }
 </style>

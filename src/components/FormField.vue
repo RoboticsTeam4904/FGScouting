@@ -3,18 +3,18 @@
     <div class="name">
       {{data[0]}}
     </div>
-    <input type="text" v-if="data[2]==='ShortText'"/>
+    <input @input="(event) => { set(event.target.value) }" type="text" v-if="data[2]==='ShortText'"/>
     <!--<div class="checkboxcenterer" v-if="data[2]==='Boolean'">
       <input :id="data[1]" class="styled-checkbox" type="checkbox"/>
       <label :for="data[1]"></label>
     </div>-->
-    <ModernRadio v-if="data[2]==='Boolean'" :multiple="false" :options="['No','Yes']"></ModernRadio>
-    <ModernRadio v-if="data[2]==='Radio'" :multiple="false" :options="data.slice(3)"></ModernRadio>
-    <ModernRadio v-if="data[2]==='RadioMultiple'" :multiple="true" :options="data.slice(3)"></ModernRadio>
-    <input type="number" v-if="data[2]==='Number'"/>
-    <ModernSelect v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(3)"></ModernSelect>
-    <div contenteditable="true" v-if="data[2]==='LongText'"></div>
-    <ModernSlider :initialPosition="parseInt(data[6])" :stepped="data[3]!=0" :steps="parseInt(data[3])" :minValue="parseInt(data[4])" :maxValue="parseInt(data[5])" v-if="data[2]==='Slider'"></ModernSlider>
+    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Boolean'" :multiple="false" :options="['No','Yes']"></ModernRadio>
+    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Radio'" :multiple="false" :options="data.slice(3)"></ModernRadio>
+    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='RadioMultiple'" :multiple="true" :options="data.slice(3)"></ModernRadio>
+    <input @input="(event) => { set(+event.target.value) }" type="number" v-if="data[2]==='Number'"/>
+    <ModernSelect @input="(event) => { set(event) }" v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(3)"></ModernSelect>
+    <div @input="(event) => { set(event.target.textContent) }" contenteditable="true" v-if="data[2]==='LongText'"></div>
+    <ModernSlider @input="(event) => { set(event) }" :initialPosition="parseInt(data[6])" :stepped="data[3]!=0" :steps="parseInt(data[3])" :minValue="parseInt(data[4])" :maxValue="parseInt(data[5])" v-if="data[2]==='Slider'"></ModernSlider>
   </div>
 </template>
 
@@ -30,6 +30,19 @@ export default {
   props: ['data'],
   data() {
     return {
+      value: null
+    }
+  },
+  mounted() {
+    this.dispatch()
+  },
+  methods: {
+    dispatch: function() {
+      this.$emit('input',this.value)
+    },
+    set: function(value) {
+      this.value = value
+      this.dispatch()
     }
   }
 }

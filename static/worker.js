@@ -2,6 +2,19 @@ var CACHE = 'network-or-cache';
 var SHEET = '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY';
 var CLIENT = ''
 
+function colName(n) {
+    var ordA = 'a'.charCodeAt(0);
+    var ordZ = 'z'.charCodeAt(0);
+    var len = ordZ - ordA + 1;
+
+    var s = "";
+    while(n >= 0) {
+        s = String.fromCharCode(n % len + ordA) + s;
+        n = Math.floor(n / len) - 1;
+    }
+    return s;
+}
+
 self.addEventListener('install', function(evt) {
   evt.waitUntil(precache());
 });
@@ -46,11 +59,107 @@ function fromNetwork(request) {
 
 function dbPush() {
   return new Promise(function (fulfill, reject) {
-    console.log('push')
     if (navigator.onLine) {
-      fulfill()
+      var db
+      var request = indexedDB.open("fgscouting", 1);
+      request.onsuccess = (ev) => {
+        db = request.result
+        var tokentx = db.transaction("tokens", "readonly");
+        var tokenstore = tokentx.objectStore("tokens");
+        var tokenreq = tokenstore.get(1)
+        tokenreq.onsuccess = function() {
+          var token = tokenreq.result
+          if (token.expires_at - 2000 > Math.round((new Date()).getTime())) {
+            token = token.token
+            var tx = db.transaction("responses", "readwrite");
+            var store = tx.objectStore("responses");
+            var getResponses = store.getAll()
+            getResponses.onsuccess = function() {
+              fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`).then((response) => {
+                return response.json()
+              }).then((value) => {
+                if(!value.error) {
+                  var responses = getResponses.result
+                  var values = []
+                  for (var i=0; i<responses.length; i++) {
+                    values.push(Object.values(responses[i]).slice(1,-1))
+                  }
+                  fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/Responses?access_token=${token}`).then(response => {
+                    return response.json()
+                  }).then(result => {
+                    var a1notation = result.values ? 'A' + (result.values.length+1).toString() : 'A1'
+                    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/Responses!${a1notation}?valueInputOption=USER_ENTERED&access_token=${token}`, {
+                      method: "PUT",
+                      body: JSON.stringify({
+                        values: values,
+                        range: `Responses!${a1notation}`
+                      })
+                    }).then((response) => {
+                      return response.json()
+                    }).then((result) => {
+                      tx = db.transaction("responses", "readwrite");
+                      store = tx.objectStore("responses");
+                      var clearResponses = store.clear()
+                      clearResponses.onsuccess = function(value) {
+                        fulfill()
+                      }
+                      clearResponses.onerror = function(error) {
+                        return reject(error)
+                      }
+                     }).catch((error) => {
+                      return reject(error)
+                    })
+                  }).catch((error) => {
+                   return reject(error)
+                  })
+                  fulfill()
+                }
+                else {
+                  var getTokens = async function () {
+                    var client = await clients.matchAll({
+                      includeUncontrolled: true
+                    })
+                    client = client[0]
+                    if (client) {
+                      client.postMessage({
+                        type: "updateTokens"
+                      })
+                    }
+                    reject('Invalid tokens')
+                  }
+                  getTokens()
+                }
+              }).catch((error) => { reject(error) })
+            }
+            getResponses.onerror = function(error) {
+              return reject(error)
+            }
+          }
+          else {
+            var getTokens = async function () {
+              var client = await clients.matchAll({
+                includeUncontrolled: true
+              })
+              client = client[0]
+              if (client) {
+                client.postMessage({
+                  type: "updateTokens"
+                })
+              }
+              reject('Invalid tokens')
+            }
+            getTokens()
+          }
+        }
+        tokenreq.onerror = function(error) {
+          reject(error)
+        }
+      }
+      request.onerror = function(error) {
+        reject(error)
+      }
     } else {
-      reject()
+      reject('Device offline')
     }
   });
 }

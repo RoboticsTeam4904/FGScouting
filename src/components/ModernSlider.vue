@@ -2,6 +2,7 @@
   <div ref="slider" class="slider">
     <div class="minlabel">{{minValue}}</div>
     <div v-if="stepped" class="division" v-for="number in Array(steps).fill(1).map((x, y) => x + y)"></div>
+    <div v-else class="division" v-for="number in Array(2).fill(1).map((x, y) => x + y)"></div>
     <div ref="handle" :class="dragging ? 'active handle' : 'handle'" @mousedown="startDrag" @mouseup="stopDrag">
       <div class="inner"></div>
       <div class="text">{{value}}</div>
@@ -36,6 +37,7 @@ export default {
           stepLength = width/(this.$props.steps-1)
           this.$refs.handle.style.left = `${22 + (stepLength * Math.round(sliderLeft/stepLength))}px`
         }
+        this.$emit('input', this.value)
       }
     }.bind(this))
     window.addEventListener('resize', function() {

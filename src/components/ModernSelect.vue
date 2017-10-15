@@ -40,9 +40,11 @@ export default {
       } else {
         this.selected = item
       }
+      this.$emit('input', this.selected)
     },
     removeSelection: function(item) {
       this.selected.splice(this.selected.indexOf(item),1)
+      this.$emit('input', this.selected)
     }
   }
 }
