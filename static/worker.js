@@ -101,7 +101,7 @@ function dbPush() {
                       store = tx.objectStore("responses");
                       var clearResponses = store.clear()
                       clearResponses.onsuccess = function(value) {
-                        fulfill()
+                        return fulfill()
                       }
                       clearResponses.onerror = function(error) {
                         return reject(error)

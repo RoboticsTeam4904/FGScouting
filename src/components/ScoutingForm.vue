@@ -70,6 +70,7 @@ export default {
   transition: background-color 0.2s ease;
   cursor: pointer;
   cursor: hand;
+  user-select: none;
 }
 .submit:hover:not(:active) {
   background-color: rgba(0,0,0,0.2);
