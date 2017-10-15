@@ -43,6 +43,9 @@ export default {
             this.updateTokens()
           }
         }.bind(this));
+        navigator.serviceWorker.ready.then(function(swRegistration) {
+          return swRegistration.sync.register('dbPush');
+        })
       }.bind(this)).catch(function(error) {
         console.error('Service worker registration failed:', error);
       });
