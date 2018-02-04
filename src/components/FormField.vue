@@ -9,12 +9,12 @@
       <label :for="data[1]"></label>
     </div>-->
     <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Boolean'" :multiple="false" :options="['No','Yes']"></ModernRadio>
-    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Radio'" :multiple="false" :options="data.slice(3)"></ModernRadio>
-    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='RadioMultiple'" :multiple="true" :options="data.slice(3)"></ModernRadio>
+    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Radio'" :multiple="false" :options="data.slice(4)"></ModernRadio>
+    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='RadioMultiple'" :multiple="true" :options="data.slice(4)"></ModernRadio>
     <input @input="(event) => { set(+event.target.value) }" type="number" v-if="data[2]==='Number'"/>
-    <ModernSelect @input="(event) => { set(event) }" v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(3)"></ModernSelect>
+    <ModernSelect @input="(event) => { set(event) }" v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(4)"></ModernSelect>
     <div @input="(event) => { set(event.target.textContent) }" contenteditable="true" v-if="data[2]==='LongText'"></div>
-    <ModernSlider @input="(event) => { set(event) }" :initialPosition="parseInt(data[6])" :stepped="data[3]!=0" :steps="parseInt(data[3])" :minValue="parseInt(data[4])" :maxValue="parseInt(data[5])" v-if="data[2]==='Slider'"></ModernSlider>
+    <ModernSlider @input="(event) => { set(event) }" :initialPosition="parseInt(data[7])" :stepped="data[4]!=0" :steps="parseInt(data[4])" :minValue="parseInt(data[5])" :maxValue="parseInt(data[6])" v-if="data[2]==='Slider'"></ModernSlider>
   </div>
 </template>
 
