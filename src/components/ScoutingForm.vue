@@ -32,13 +32,18 @@ export default {
       this.state[item] = value
     },
     submit: function() {
+      var unfilled_names = [];
       for (var i=0; i<this.$props.questions.length; i++){
         if(this.$props.questions[i][3]=="yes" && this.state[this.$props.questions[i][1]]==null){
-          alert("Please fill out all required sections.");
-          return;
+          unfilled_names.push(this.$props.questions[i][0])
         }
       }
-      this.$emit('submit',this.state)
+      if(unfilled_names.length > 0){
+        alert("Please fill out these required sections: " + unfilled_names.join(', ').toString())
+      }else{
+        this.$emit('submit',this.state)
+        alert("Submitted")
+      }
     }
   }
 }
