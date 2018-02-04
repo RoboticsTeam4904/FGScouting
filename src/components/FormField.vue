@@ -1,6 +1,9 @@
 <template>
   <div class="field">
-    <div class="name">
+    <div v-if="data[3]==='yes'" class="name">
+      {{data[0] + " *"}}
+    </div>
+    <div v-else class="name">
       {{data[0]}}
     </div>
     <input @input="(event) => { set(event.target.value) }" type="text" v-if="data[2]==='ShortText'"/>
