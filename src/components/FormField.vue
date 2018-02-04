@@ -51,7 +51,10 @@ export default {
 <style scoped>
 .name {
   color: white;
-  font-size: 12px;
+  font-size: 13px;
+}
+.field {
+  padding-bottom: 8px;
 }
 input[type='text'] {
   outline: none;
