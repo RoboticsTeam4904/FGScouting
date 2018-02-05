@@ -67,6 +67,7 @@ export default {
     var stepLength = width/(this.$props.maxValue - this.$props.minValue)
     this.value = this.initialPosition
     this.$refs.handle.style.left = `${22 + (stepLength * (this.$props.initialPosition - this.$props.minValue))}px`
+    this.$emit('input', this.value)
   }
 }
 </script>
