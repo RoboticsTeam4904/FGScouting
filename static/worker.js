@@ -69,7 +69,7 @@ function dbPush() {
         var tokenreq = tokenstore.get(1)
         tokenreq.onsuccess = function() {
           var token = tokenreq.result
-          if (token.expires_at - 2000 > Math.round((new Date()).getTime())) {
+          if (token && token.expires_at - 2000 > Math.round((new Date()).getTime())) {
             token = token.token
             var tx = db.transaction("responses", "readwrite");
             var store = tx.objectStore("responses");

@@ -90,7 +90,7 @@ export default {
   background-color: rgba(0,0,0,0.3);
 }
 .container {
-  padding-top: 150px;
+  padding-top: 100px;
   width: 100vw;
   display: flex;
   justify-content: flex-start;
