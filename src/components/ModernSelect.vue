@@ -46,6 +46,9 @@ export default {
       this.selected.splice(this.selected.indexOf(item),1)
       this.$emit('input', this.selected)
     }
+  },
+  mounted(){
+    this.$emit('input', this.selected)
   }
 }
 </script>
