@@ -222,7 +222,6 @@ export default {
     },
     unprompt: function() {
       this.prompting = false
-      console.log('unprompt')
     },
     updateTokens: function() {
       var tx = this.db.transaction("tokens", "readwrite");
