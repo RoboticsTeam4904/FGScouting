@@ -42,7 +42,7 @@ type serviceBearerToken struct {
 
 var spreadsheetID string
 var srv *sheets.Service
-var tokenStore *map[string]*serviceBearerToken
+var tokenStore map[string]*serviceBearerToken
 
 func getTokenInfo(token string, u *googleOAuthTokenInfo) error {
 	tokeninfo, err := http.Get(fmt.Sprintf("https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=%s", token))
@@ -99,7 +99,7 @@ func issueToken(w http.ResponseWriter, r *http.Request) {
 	hToken := sha256.Sum256(append(_token, _bytes[:]...))
 	token := fmt.Sprintf("~%x", hToken)
 	expiry := time.Now().UTC().Unix() + 86400
-	(*tokenStore)[token] = &serviceBearerToken{
+	tokenStore[token] = &serviceBearerToken{
 		user:    strings.Split(userInfo.Email, "@")[0],
 		tExpiry: expiry,
 		token:   hToken,
@@ -219,7 +219,7 @@ func saveToken(file string, token *oauth2.Token) {
 
 func main() {
 	spreadsheetID = "17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY"
-	tokenStore = &map[string]*serviceBearerToken{}
+	tokenStore = map[string]*serviceBearerToken{}
 
 	ctx := context.Background()
 
