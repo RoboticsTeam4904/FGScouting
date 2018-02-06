@@ -30,6 +30,10 @@ export default {
   },
   methods: {
     set: function(item,value) {
+      if (value === "" || value === NaN || value === Infinity) {
+        this.state[item] = null
+        return
+      }
       this.state[item] = value
     },
     submit: function() {
