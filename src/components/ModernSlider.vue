@@ -26,7 +26,7 @@ export default {
     window.addEventListener('resize', function() {
       var width = this.$refs.slider.getBoundingClientRect().width - this.magics[2]*2 + this.magics[0]
       var stepLength = this.$props.stepped ? width/(this.$props.steps-1) : width/(this.$props.maxValue - this.$props.minValue)
-      this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2) + (this.$props.stepped ? this.value-this.$props.minValue : this.value)* stepLength}px`
+      this.$refs.handle.style.left = `${(this.magics[1]+(this.magics[0]/2)) + (this.$props.stepped ? this.value-this.$props.minValue : this.value)* stepLength}px`
     }.bind(this))
     return {
       dragging: false,
@@ -51,31 +51,31 @@ export default {
     updateDrag: function(){
       this.mousePosition = [event.targetTouches ? event.targetTouches[0].pageX : event.pageX, event.targetTouches ? event.targetTouches[0].pageY : event.pageY]
       if (this.dragging) {
-        var width = this.$refs.slider.getBoundingClientRect().width - this.magics[2]*2 + this.magics[0]
+        var width = this.$refs.slider.getBoundingClientRect().width - ((this.magics[2]*2) + (this.magics[0]))
         var stepLength = width/(this.$props.maxValue - this.$props.minValue)
         this.$refs.handle.style.left = `${(event.targetTouches ? event.targetTouches[0].pageX : event.pageX) - this.xOffset - this.$refs.slider.getBoundingClientRect().left}px`
-        if (this.$refs.handle.getBoundingClientRect().left < this.$refs.slider.getBoundingClientRect().left+(this.magics[1]+this.magics[0]/2)) {
-          this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2)}px`
+        if (this.$refs.handle.getBoundingClientRect().left < this.$refs.slider.getBoundingClientRect().left+(this.magics[1]+(this.magics[0]/2))) {
+          this.$refs.handle.style.left = `${(this.magics[1]+(this.magics[0]/2))}px`
         }
-        if (this.$refs.handle.getBoundingClientRect().right > this.$refs.slider.getBoundingClientRect().right-(this.magics[1]+this.magics[0]/2)) {
-          this.$refs.handle.style.left = `${this.$refs.slider.getBoundingClientRect().width-(this.magics[1]*2+this.magics[0]/2)}px`
+        if (this.$refs.handle.getBoundingClientRect().right > this.$refs.slider.getBoundingClientRect().right-(this.magics[1]+(this.magics[0]/2))) {
+          this.$refs.handle.style.left = `${this.$refs.slider.getBoundingClientRect().width-((this.magics[1]*2)+(this.magics[0]/2))}px`
         }
-        var sliderLeft = this.$refs.handle.getBoundingClientRect().left - this.$refs.slider.getBoundingClientRect().left - (this.magics[1]+this.magics[0]/2)
+        var sliderLeft = this.$refs.handle.getBoundingClientRect().left - this.$refs.slider.getBoundingClientRect().left - (this.magics[1]+(this.magics[0]/2))
         this.value = Math.round(sliderLeft/stepLength) + this.$props.minValue
         if (this.$props.stepped) {
           stepLength = width/(this.$props.steps-1)
-          this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2) + (stepLength * Math.round(sliderLeft/stepLength))}px`
+          this.$refs.handle.style.left = `${(this.magics[1]+(this.magics[0]/2)) + (stepLength * Math.round(sliderLeft/stepLength))}px`
         }
         this.$emit('input', this.value)
       }
     }
   },
   mounted() {
-    this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2)}px`
+    this.$refs.handle.style.left = `${(this.magics[1]+(this.magics[0]/2))}px`
     var width = this.$refs.slider.getBoundingClientRect().width - this.magics[2]*2 + this.magics[0]
     var stepLength = width/(this.$props.maxValue - this.$props.minValue)
     this.value = this.initialPosition
-    this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2) + (stepLength * (this.$props.initialPosition - this.$props.minValue))}px`
+    this.$refs.handle.style.left = `${(this.magics[1]+(this.magics[0]/2)) + (stepLength * (this.$props.initialPosition - this.$props.minValue))}px`
     this.$emit('input', this.value)
   }
 }
