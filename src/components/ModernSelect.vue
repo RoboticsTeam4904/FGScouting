@@ -8,7 +8,7 @@
   </div>
   <div :class="collapsed ? 'arrow flipped' : 'arrow'"><i :class="collapsed ? 'icon ion-ios-arrow-down flip' : 'icon ion-ios-arrow-down'"></i></div>
   <div :class="collapsed ? 'menu' : 'hidden menu'">
-    <div v-for="option in options" v-if="multiple ? (selected.indexOf(option)===-1 || allowDuplicates) : option != selected" :class="multiple ? 'option multiple' : 'option'" @click="setSelected(option)">
+    <div v-for="option in possible" v-if="multiple ? (selected.indexOf(option)===-1 || allowDuplicates) : (option != selected && option != 'Select one')" :class="multiple ? 'option multiple' : 'option'" @click="setSelected(option)">
       {{option}}
     </div>
   </div>
@@ -18,7 +18,7 @@
 <script>
 export default {
   name: 'modernselect',
-  props: ['value', 'options', 'multiple', 'allowDuplicates'],
+  props: ['value', 'options', 'multiple', 'allowDuplicates','prefilled'],
   data() {
     document.addEventListener('mouseup', function(event){
       if (event.target.className!='open box' && event.target.className!='option' && event.target.className!='icon ion-ios-arrow-down flip')
@@ -26,8 +26,9 @@ export default {
       this.helper = true;
     }.bind(this))
     return {
-      selected: this.$props.multiple ? [] : this.$props.options[0],
-      collapsed: false
+      selected: this.$props.prefilled ? (this.$props.multiple ? [] : this.$props.options[0]) : 'Select one',
+      collapsed: false,
+      possible: this.$props.prefilled ? this.$props.options : ['Select one'].concat(this.$props.options)
     }
   },
   methods: {
@@ -40,7 +41,9 @@ export default {
       } else {
         this.selected = item
       }
-      this.$emit('input', this.selected)
+      if (this.selected != 'Select one') {
+        this.$emit('input', this.selected)
+      }
     },
     removeSelection: function(item) {
       this.selected.splice(this.selected.indexOf(item),1)
@@ -48,7 +51,9 @@ export default {
     }
   },
   mounted(){
-    this.$emit('input', this.selected)
+    if (this.$props.prefilled) {
+      this.$emit('input', this.selected)
+    }
   }
 }
 </script>
@@ -70,6 +75,7 @@ export default {
   align-items: center;
   user-select: none;
   position: relative;
+  user-select: none;
   padding-right: 21px;
 }
 .selection .icon {
@@ -93,6 +99,7 @@ export default {
   justify-content: center;
   align-items: flex-start;
   cursor: pointer;
+  user-select: none;
   position: relative;
 }
 .open.box {
