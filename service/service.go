@@ -127,6 +127,27 @@ func checkToken(value string) bool {
 	return true
 }
 
+func verifyAuthString(value string) bool {
+	if value[0] == '~' {
+		if !checkToken(value) {
+			return false
+		}
+	} else {
+		userInfo := *new(googleOAuthTokenInfo)
+		err := getTokenInfo(value, &userInfo)
+		if err != nil {
+			return false
+		}
+		if len(strings.Split(userInfo.Email, "@")) < 2 {
+			return false
+		}
+		if strings.Split(userInfo.Email, "@")[1] != "nuevaschool.org" {
+			return false
+		}
+	}
+	return true
+}
+
 func getQuestions(w http.ResponseWriter, r *http.Request) {
 	if len(r.URL.Query()["token"]) != 1 {
 		json.NewEncoder(w).Encode(map[string]string{
@@ -134,34 +155,11 @@ func getQuestions(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	if r.URL.Query()["token"][0][0] == '~' {
-		if !checkToken(r.URL.Query()["token"][0]) {
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": "Bad token",
-			})
-			return
-		}
-	} else {
-		userInfo := *new(googleOAuthTokenInfo)
-		err := getTokenInfo(r.URL.Query()["token"][0], &userInfo)
-		if err != nil {
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": "Invalid token specification or data",
-			})
-			return
-		}
-		if len(strings.Split(userInfo.Email, "@")) < 2 {
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": "Invalid user",
-			})
-			return
-		}
-		if strings.Split(userInfo.Email, "@")[1] != "nuevaschool.org" {
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": "Invalid user domain",
-			})
-			return
-		}
+	if !verifyAuthString(r.URL.Query()["token"][0]) {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Bad token, user specifier, etc.",
+		})
+		return
 	}
 	readRange := "Questions"
 	resp, err := srv.Spreadsheets.Values.Get(spreadsheetID, readRange).Do()
