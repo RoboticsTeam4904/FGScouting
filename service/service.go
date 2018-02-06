@@ -99,6 +99,11 @@ func issueToken(w http.ResponseWriter, r *http.Request) {
 	hToken := sha256.Sum256(append(_token, _bytes[:]...))
 	token := fmt.Sprintf("~%x", hToken)
 	expiry := time.Now().UTC().Unix() + 86400
+	for k, v := range tokenStore {
+		if v.user == strings.Split(userInfo.Email, "@")[0] {
+			delete(tokenStore, k)
+		}
+	}
 	tokenStore[token] = &serviceBearerToken{
 		user:    strings.Split(userInfo.Email, "@")[0],
 		tExpiry: expiry,
@@ -110,6 +115,18 @@ func issueToken(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func checkToken(value string) bool {
+	val, ok := tokenStore[value]
+	if !ok {
+		return false
+	}
+	if val.tExpiry <= time.Now().UTC().Unix() {
+		delete(tokenStore, value)
+		return false
+	}
+	return true
+}
+
 func getQuestions(w http.ResponseWriter, r *http.Request) {
 	if len(r.URL.Query()["token"]) != 1 {
 		json.NewEncoder(w).Encode(map[string]string{
@@ -117,25 +134,34 @@ func getQuestions(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	userInfo := *new(googleOAuthTokenInfo)
-	err := getTokenInfo(r.URL.Query()["token"][0], &userInfo)
-	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": "Invalid token specification or data",
-		})
-		return
-	}
-	if len(strings.Split(userInfo.Email, "@")) < 2 {
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": "Invalid user",
-		})
-		return
-	}
-	if strings.Split(userInfo.Email, "@")[1] != "nuevaschool.org" {
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": "Invalid user domain",
-		})
-		return
+	if r.URL.Query()["token"][0][0] == '~' {
+		if !checkToken(r.URL.Query()["token"][0]) {
+			json.NewEncoder(w).Encode(map[string]string{
+				"error": "Bad token",
+			})
+			return
+		}
+	} else {
+		userInfo := *new(googleOAuthTokenInfo)
+		err := getTokenInfo(r.URL.Query()["token"][0], &userInfo)
+		if err != nil {
+			json.NewEncoder(w).Encode(map[string]string{
+				"error": "Invalid token specification or data",
+			})
+			return
+		}
+		if len(strings.Split(userInfo.Email, "@")) < 2 {
+			json.NewEncoder(w).Encode(map[string]string{
+				"error": "Invalid user",
+			})
+			return
+		}
+		if strings.Split(userInfo.Email, "@")[1] != "nuevaschool.org" {
+			json.NewEncoder(w).Encode(map[string]string{
+				"error": "Invalid user domain",
+			})
+			return
+		}
 	}
 	readRange := "Questions"
 	resp, err := srv.Spreadsheets.Values.Get(spreadsheetID, readRange).Do()
