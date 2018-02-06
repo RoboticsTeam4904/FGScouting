@@ -1,10 +1,18 @@
 <template>
-  <span>
+<span>
+  <div :class="prompting ? 'overlay active' : 'overlay'">
+    <div class="prompt mshadow static">
+      <div class="message">{{promptmessage[0]}}</div>
+      <div class="subtext">{{promptmessage[1]}}<br/><div class="closemessage">Tap anywhere or press any key to continue</div></div>
+    </div>
+  </div>
+  <div :class="prompting ? 'cont overlayed' : 'cont'">
     <Loader v-if="applicationStatus==='initializing'"></Loader>
     <ErrorPage v-if="applicationStatus==='fatalError'" :text="failureText"></ErrorPage>
     <SignInPage v-if="applicationStatus==='signIn'" :errorMessage="signInErrorMessage" :callback="signIn"></SignInPage>
-    <ScoutingForm @submit="submit" :networkStatus="isConnected" v-if="applicationStatus==='scouting'" :signOut="signOut" :questions="questions"></ScoutingForm>
-  </span>
+    <ScoutingForm @prompt="prompt" @submit="submit" :networkStatus="isConnected" v-if="applicationStatus==='scouting'" :signOut="signOut" :questions="questions"></ScoutingForm>
+  </div>
+</span>
 </template>
 
 <script>
@@ -28,7 +36,9 @@ export default {
       isSignedIn: false,
       db: null,
       dbStatus: null,
-      questions: []
+      questions: [],
+      prompting: true,
+      promptmessage: []
     }
   },
   mounted() {
@@ -55,6 +65,15 @@ export default {
     this.initialize()
     window.addEventListener('online',  this.updateConnectionStatus);
     window.addEventListener('offline', this.updateConnectionStatus);
+    window.addEventListener('keyup', (event) => {
+      if (this.prompting) this.prompting = false
+    })
+    window.addEventListener('touchstart', (event) => {
+      if (this.prompting) this.prompting = false
+    })
+    window.addEventListener('mousedown', (event) => {
+      if (this.prompting) this.prompting = false
+    })
   },
   methods: {
     initialize: function () {
@@ -81,7 +100,7 @@ export default {
             if (!navigator.onLine) {
               this.dbStatus = false
               this.applicationStatus = 'fatalError'
-              this.failureText = 'No local cache found, please connect your computer to the internet. Waiting for connection.'
+              this.failureText = 'No local cache found, please connect your device to the internet. Waiting for connection.'
               this.failureType = 'init_network'
             }
           }
@@ -197,6 +216,14 @@ export default {
         })
       }
     },
+    prompt: function(promptmessage) {
+      this.prompting = true
+      this.promptmessage = promptmessage
+    },
+    unprompt: function() {
+      this.prompting = false
+      console.log('unprompt')
+    },
     updateTokens: function() {
       var tx = this.db.transaction("tokens", "readwrite");
       var store = tx.objectStore("tokens");
@@ -238,7 +265,32 @@ body, html {
   background-color: #0a2634;
   overflow-x: hidden;
 }
-
+.overlay {
+  background: transparent;
+  will-change: background;
+  position: fixed;
+  z-index: -1;
+  transition: background 0.1s ease-in-out;
+}
+.cont {
+  transition: filter 0.1s ease-in-out;
+  will-change: filter;
+}
+.overlay.active {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  z-index: 1000;
+  background: rgba(255,255,255,0.1);
+}
+.cont.overlayed {
+  filter: blur(5px);
+  height: 100vh;
+}
 .mshadow {
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
@@ -252,5 +304,38 @@ body, html {
 }
 ::-webkit-scrollbar-thumb {
   background-color: #3e77bb;
+}
+.prompt {
+  width: 90vw;
+  max-width: 400px;
+  max-height: 300px;
+  background-color: #3e77bb;
+  border-radius: 3px;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+  flex-flow: column nowrap;
+  opacity: 0;
+  padding: 20px;
+  transition: opacity 0.3s ease-in-out;
+}
+.active > .prompt {
+  opacity: 1;
+}
+.message {
+  font-size: 2rem;
+  text-align: center;
+  color: white;
+  margin-bottom: 20px;
+}
+.subtext {
+  color: white;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.closemessage {
+  padding-top: 10px;
+  font-size: 1rem;
 }
 </style>

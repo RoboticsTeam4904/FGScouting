@@ -4,7 +4,7 @@
     <div class="form mshadow static">
       <div class="forminner">
         <div class="heading">Team 4904 Field Scouting</div>
-        <FormField v-for="question in questions" :data="question" :key="question[1]" @input="(value) => { set(question[1], value) }"></FormField>
+        <FormField v-for="question in questions" :data="question" :failed="failed.indexOf(question)!=-1" :key="question[1]" @input="(value) => { set(question[1], value) }"></FormField>
         <div class="center"><div class="submit" @click="submit">Submit</div></div>
       </div>
     </div>
@@ -21,10 +21,11 @@ export default {
   data() {
     var state = {}
     for (var i=0; i<this.$props.questions.length; i++) {
-      state[this.$props.questions[1]] = null
+      state[this.$props.questions[i][1]] = null
     }
     return {
-      state
+      state,
+      failed: []
     }
   },
   methods: {
@@ -32,17 +33,14 @@ export default {
       this.state[item] = value
     },
     submit: function() {
-      var unfilled_names = [];
-      for (var i=0; i<this.$props.questions.length; i++){
-        if(this.$props.questions[i][3]=="yes" && this.state[this.$props.questions[i][1]]==null){
-          unfilled_names.push(this.$props.questions[i][0])
-        }
+      var unfilled = this.$props.questions.filter((question) => {
+        return this.state.hasOwnProperty(question[1]) && this.state[question[1]] === null && question[3] === "yes"
+      })
+      if (unfilled.length > 0) {
+        this.$emit('prompt',['Missing required fields', `Please fill the following required fields: ${unfilled.map(item => item[1]).join(', ')}.`])
       }
-      if(unfilled_names.length > 0){
-        alert("Please fill out these required sections: " + unfilled_names.join(', ').toString())
-      }else{
+      else {
         this.$emit('submit',this.state)
-        alert("Submitted")
       }
     }
   }
@@ -148,7 +146,7 @@ export default {
   max-width: 700px;
   width: 100%;
   border-radius: 3px;
-  margin-bottom: 100px;
+  margin-bottom: 50px;
 }
 @media all and (max-width: 700px) {
   .form {

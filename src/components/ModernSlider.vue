@@ -153,6 +153,9 @@ export default {
   width: 0;
   opacity: 0;
   height: 0;
+  display: flex;
+  justify-content: center;
+  align-content: center;
   border-radius: 10px;
 }
 .active.handle {

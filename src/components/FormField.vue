@@ -1,16 +1,12 @@
 <template>
   <div class="field">
     <div v-if="data[3]==='yes'" class="name">
-      {{data[0] + " *"}}
+      {{data[0]}} <span class="required">*</span>
     </div>
     <div v-else class="name">
       {{data[0]}}
     </div>
     <input @input="(event) => { set(event.target.value) }" type="text" v-if="data[2]==='ShortText'"/>
-    <!--<div class="checkboxcenterer" v-if="data[2]==='Boolean'">
-      <input :id="data[1]" class="styled-checkbox" type="checkbox"/>
-      <label :for="data[1]"></label>
-    </div>-->
     <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Boolean'" :multiple="false" :options="['No','Yes']"></ModernRadio>
     <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='BooleanReverse'" :multiple="false" :options="['Yes','No']"></ModernRadio>
     <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Radio'" :multiple="false" :options="data.slice(4)"></ModernRadio>
@@ -77,6 +73,9 @@ input[type='text'] {
 }
 input[type='text'], input[type='number'], textarea {
   box-sizing: border-box;
+}
+.failed {
+  border: 1px solid #cc241d;
 }
 input[type='text']:focus {
   border-bottom: 2px solid rgba(0,0,0,0.3);
@@ -151,7 +150,10 @@ input[type="checkbox"] + label:before {
   cursor: pointer;
   transition: 0.3s ease all;
 }
-
+.required {
+  user-select: none;
+  color: #ff0000;
+}
 input[type="checkbox"]:checked + label:before {
   content: 'Yes';
   background-color: rgba(0,0,0,0.3);
