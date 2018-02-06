@@ -12,6 +12,7 @@
       <label :for="data[1]"></label>
     </div>-->
     <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Boolean'" :multiple="false" :options="['No','Yes']"></ModernRadio>
+    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='BooleanReverse'" :multiple="false" :options="['Yes','No']"></ModernRadio>
     <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Radio'" :multiple="false" :options="data.slice(4)"></ModernRadio>
     <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='RadioMultiple'" :multiple="true" :options="data.slice(4)"></ModernRadio>
     <input @input="(event) => { set(+event.target.value) }" type="number" v-if="data[2]==='Number'"/>

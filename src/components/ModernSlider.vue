@@ -3,7 +3,7 @@
     <div class="minlabel">{{minValue}}</div>
     <div v-if="stepped" class="division" v-for="number in Array(steps).fill(1).map((x, y) => x + y)"></div>
     <div v-else class="division" v-for="number in Array(2).fill(1).map((x, y) => x + y)"></div>
-    <div ref="handle" :class="dragging ? 'active handle' : 'handle'" @mousedown="startDrag" @mouseup="stopDrag">
+    <div ref="handle" :class="dragging ? 'active handle' : 'handle'" @mousedown="startDrag" @touchstart="startDragMobile" @mouseup="stopDrag" @touchend="stopDrag" @touchmove="updateDrag">
       <div class="inner"></div>
       <div class="text">{{value}}</div>
     </div>
@@ -19,37 +19,21 @@ export default {
     document.addEventListener('mouseup', function(){
       this.dragging = false;
     }.bind(this))
-    document.addEventListener('mousemove', function(){
-      this.mousePosition = [event.pageX, event.pageY]
-      if (this.dragging) {
-        var width = this.$refs.slider.getBoundingClientRect().width - 64
-        var stepLength = width/(this.$props.maxValue - this.$props.minValue)
-        this.$refs.handle.style.left = `${event.pageX - this.xOffset - this.$refs.slider.getBoundingClientRect().left}px`
-        if (this.$refs.handle.getBoundingClientRect().left < this.$refs.slider.getBoundingClientRect().left+22) {
-          this.$refs.handle.style.left = `${22}px`
-        }
-        if (this.$refs.handle.getBoundingClientRect().right > this.$refs.slider.getBoundingClientRect().right-22) {
-          this.$refs.handle.style.left = `${this.$refs.slider.getBoundingClientRect().width-42}px`
-        }
-        var sliderLeft = this.$refs.handle.getBoundingClientRect().left - this.$refs.slider.getBoundingClientRect().left - 22
-        this.value = Math.round(sliderLeft/stepLength) + this.$props.minValue
-        if (this.$props.stepped) {
-          stepLength = width/(this.$props.steps-1)
-          this.$refs.handle.style.left = `${22 + (stepLength * Math.round(sliderLeft/stepLength))}px`
-        }
-        this.$emit('input', this.value)
-      }
+    document.addEventListener('touchend', function(){
+      this.dragging = false;
     }.bind(this))
+    document.addEventListener('mousemove', this.updateDrag)
     window.addEventListener('resize', function() {
-      var width = this.$refs.slider.getBoundingClientRect().width - 64
+      var width = this.$refs.slider.getBoundingClientRect().width - this.magics[2]*2 + this.magics[0]
       var stepLength = this.$props.stepped ? width/(this.$props.steps-1) : width/(this.$props.maxValue - this.$props.minValue)
-      this.$refs.handle.style.left = `${22 + (this.$props.stepped ? this.value-this.$props.minValue : this.value)* stepLength}px`
+      this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2) + (this.$props.stepped ? this.value-this.$props.minValue : this.value)* stepLength}px`
     }.bind(this))
     return {
       dragging: false,
       xOffset: 0,
       mousePosition: [0,0],
-      value: null
+      value: null,
+      magics: [4, 20, 30]
     }
   },
   methods: {
@@ -57,16 +41,41 @@ export default {
       this.dragging = true
       this.xOffset = this.mousePosition[0] - this.$refs.handle.getBoundingClientRect().left
     },
+    startDragMobile: function(event) {
+      this.dragging = true
+      this.xOffset = event.targetTouches[0].clientX - this.$refs.handle.getBoundingClientRect().left
+    },
     stopDrag: function() {
       this.dragging = false
+    },
+    updateDrag: function(){
+      this.mousePosition = [event.targetTouches ? event.targetTouches[0].pageX : event.pageX, event.targetTouches ? event.targetTouches[0].pageY : event.pageY]
+      if (this.dragging) {
+        var width = this.$refs.slider.getBoundingClientRect().width - this.magics[2]*2 + this.magics[0]
+        var stepLength = width/(this.$props.maxValue - this.$props.minValue)
+        this.$refs.handle.style.left = `${(event.targetTouches ? event.targetTouches[0].pageX : event.pageX) - this.xOffset - this.$refs.slider.getBoundingClientRect().left}px`
+        if (this.$refs.handle.getBoundingClientRect().left < this.$refs.slider.getBoundingClientRect().left+(this.magics[1]+this.magics[0]/2)) {
+          this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2)}px`
+        }
+        if (this.$refs.handle.getBoundingClientRect().right > this.$refs.slider.getBoundingClientRect().right-(this.magics[1]+this.magics[0]/2)) {
+          this.$refs.handle.style.left = `${this.$refs.slider.getBoundingClientRect().width-(this.magics[1]*2+this.magics[0]/2)}px`
+        }
+        var sliderLeft = this.$refs.handle.getBoundingClientRect().left - this.$refs.slider.getBoundingClientRect().left - (this.magics[1]+this.magics[0]/2)
+        this.value = Math.round(sliderLeft/stepLength) + this.$props.minValue
+        if (this.$props.stepped) {
+          stepLength = width/(this.$props.steps-1)
+          this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2) + (stepLength * Math.round(sliderLeft/stepLength))}px`
+        }
+        this.$emit('input', this.value)
+      }
     }
   },
   mounted() {
-    this.$refs.handle.style.left = `${22}px`
-    var width = this.$refs.slider.getBoundingClientRect().width - 64
+    this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2)}px`
+    var width = this.$refs.slider.getBoundingClientRect().width - this.magics[2]*2 + this.magics[0]
     var stepLength = width/(this.$props.maxValue - this.$props.minValue)
     this.value = this.initialPosition
-    this.$refs.handle.style.left = `${22 + (stepLength * (this.$props.initialPosition - this.$props.minValue))}px`
+    this.$refs.handle.style.left = `${(this.magics[1]+this.magics[0]/2) + (stepLength * (this.$props.initialPosition - this.$props.minValue))}px`
     this.$emit('input', this.value)
   }
 }
