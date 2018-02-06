@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,7 +12,9 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"golang.org/x/net/context"
@@ -30,44 +34,94 @@ type googleOAuthTokenInfo struct {
 	EmailVerified string `json:"email_verified"`
 	AccessType    string `json:"access_type"`
 }
+type serviceBearerToken struct {
+	user    string
+	tExpiry int64
+	token   [32]byte
+}
 
 var spreadsheetID string
 var srv *sheets.Service
+var tokenStore *map[string]*serviceBearerToken
 
-func getQuestions(w http.ResponseWriter, r *http.Request) {
-	if len(r.URL.Query()["token"]) != 1 {
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": "Invalid token",
-		})
-	}
-	tokeninfo, err := http.Get(fmt.Sprintf("https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=%s", r.URL.Query()["token"][0]))
+func getTokenInfo(token string, u *googleOAuthTokenInfo) error {
+	tokeninfo, err := http.Get(fmt.Sprintf("https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=%s", token))
 	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": "Invalid token",
-		})
-		return
+		return err
 	}
 	defer tokeninfo.Body.Close()
 	bodyBytes := []byte{}
 	if tokeninfo.StatusCode == http.StatusOK {
 		bodyBytes, err = ioutil.ReadAll(tokeninfo.Body)
 		if err != nil {
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": "Invalid token",
-			})
-			return
+			return err
 		}
 	} else {
+		return err
+	}
+	err = json.Unmarshal(bodyBytes, u)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func issueToken(w http.ResponseWriter, r *http.Request) {
+	if len(r.URL.Query()["token"]) != 1 {
 		json.NewEncoder(w).Encode(map[string]string{
-			"error": "Invalid token",
+			"error": "Invalid query parameters",
 		})
 		return
 	}
 	userInfo := *new(googleOAuthTokenInfo)
-	err = json.Unmarshal(bodyBytes, &userInfo)
+	err := getTokenInfo(r.URL.Query()["token"][0], &userInfo)
 	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{
-			"error": "Invalid token structure",
+			"error": "Invalid token specification or data",
+		})
+		return
+	}
+	if len(strings.Split(userInfo.Email, "@")) < 2 {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Invalid user",
+		})
+		return
+	}
+	if strings.Split(userInfo.Email, "@")[1] != "nuevaschool.org" {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Invalid user domain",
+		})
+		return
+	}
+	_token := make([]byte, 16)
+	rand.Read(_token)
+	_bytes := []byte(strconv.FormatInt(time.Now().UTC().UnixNano(), 10))
+	hToken := sha256.Sum256(append(_token, _bytes[:]...))
+	token := fmt.Sprintf("~%x", hToken)
+	expiry := time.Now().UTC().Unix() + 86400
+	(*tokenStore)[token] = &serviceBearerToken{
+		user:    strings.Split(userInfo.Email, "@")[0],
+		tExpiry: expiry,
+		token:   hToken,
+	}
+	json.NewEncoder(w).Encode(map[string]string{
+		"token":      token,
+		"expires_at": strconv.FormatInt(expiry, 10),
+	})
+}
+
+func getQuestions(w http.ResponseWriter, r *http.Request) {
+	if len(r.URL.Query()["token"]) != 1 {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Invalid query parameters",
+		})
+		return
+	}
+	userInfo := *new(googleOAuthTokenInfo)
+	err := getTokenInfo(r.URL.Query()["token"][0], &userInfo)
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Invalid token specification or data",
 		})
 		return
 	}
@@ -97,6 +151,7 @@ func getQuestions(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{
 			"error": "No data",
 		})
+		return
 	}
 }
 
@@ -164,6 +219,7 @@ func saveToken(file string, token *oauth2.Token) {
 
 func main() {
 	spreadsheetID = "17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY"
+	tokenStore = &map[string]*serviceBearerToken{}
 
 	ctx := context.Background()
 
@@ -189,6 +245,7 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/questions", getQuestions)
+	router.HandleFunc("/token", issueToken)
 	log.Println("Starting server on *:8001")
 	log.Fatal(http.ListenAndServe(":8001", router))
 }
