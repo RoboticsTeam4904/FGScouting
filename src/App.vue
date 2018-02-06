@@ -37,7 +37,7 @@ export default {
       db: null,
       dbStatus: null,
       questions: [],
-      prompting: true,
+      prompting: false,
       promptmessage: []
     }
   },
