@@ -87,8 +87,8 @@ export default {
   width: 100%;
   height: 10px;
   box-sizing: border-box;
-  margin-top: 31px;
-  margin-bottom: 10px;
+  margin-top: 41px;
+  margin-bottom: 30px;
   background-color: rgba(0,0,0,0.1);
   border-radius: 10px;
   display: flex;
@@ -102,7 +102,7 @@ export default {
 .text {
   position: absolute;
   color: white;
-  font-size: 16px;
+  font-size: 14px;
 }
 .minlabel, .maxlabel {
   position: absolute;

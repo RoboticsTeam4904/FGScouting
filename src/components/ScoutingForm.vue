@@ -81,6 +81,7 @@ export default {
   margin-top: 15px;
   background-color: rgba(0,0,0,0.1);
   transition: background-color 0.2s ease;
+  font-size: 18px;
   cursor: pointer;
   cursor: hand;
   user-select: none;

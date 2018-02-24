@@ -52,7 +52,7 @@ export default {
 <style scoped>
 .name {
   color: white;
-  font-size: 20px;
+  font-size: 18px;
 }
 .field {
   margin-bottom: 60px;
