@@ -115,8 +115,8 @@ export default {
 }
 .heading {
   color: white;
-  font-size: 20px;
-  margin-bottom: 50px;
+  font-size: 36px;
+  margin-bottom: 70px;
   width: 100%;
   text-align: center;
 }

@@ -52,10 +52,10 @@ export default {
 <style scoped>
 .name {
   color: white;
-  font-size: 13px;
+  font-size: 20px;
 }
 .field {
-  padding-bottom: 8px;
+  margin-bottom: 60px;
 }
 input[type='text'] {
   outline: none;
@@ -63,11 +63,12 @@ input[type='text'] {
   border-bottom: 2px solid rgba(0,0,0,0.1);
   transition: border 0.2s ease;
   margin-top: 2px;
+  font-size: 16px;
   font-family: Arvo;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   width: 100%;
   padding-bottom: 8px;
-  padding-top: 8px;
+  padding-top: 16px;
   background-color: transparent;
   color: white;
 }
@@ -87,7 +88,7 @@ input[type='text']:focus {
   transition: border 0.2s ease;
   margin-top: 2px;
   font-family: Arvo;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   width: 100%;
   padding-bottom: 8px;
   padding-top: 8px;
@@ -106,10 +107,11 @@ input[type='number'] {
   transition: border 0.2s ease;
   margin-top: 2px;
   font-family: Arvo;
-  margin-bottom: 10px;
+  font-size: 16px;
+  margin-bottom: 5px;
   width: 100%;
   padding-bottom: 8px;
-  padding-top: 8px;
+  padding-top: 16px;
   background-color: transparent;
   color: white;
 }

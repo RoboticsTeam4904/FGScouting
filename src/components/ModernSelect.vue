@@ -89,11 +89,12 @@ export default {
   background-color: rgba(0,0,0,0.1);
   padding: 7px;
   margin: 7px;
+  margin-top: 24px;
   margin-left: 0;
   margin-right: 0;
   color: white;
   border-radius: 3px;
-  font-size: 12px;
+  font-size: 16px;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;

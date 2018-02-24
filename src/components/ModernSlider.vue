@@ -87,10 +87,10 @@ export default {
   width: 100%;
   height: 10px;
   box-sizing: border-box;
-  margin-top: 10px;
+  margin-top: 31px;
   margin-bottom: 10px;
   background-color: rgba(0,0,0,0.1);
-  border-radius: 3px;
+  border-radius: 10px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -102,12 +102,12 @@ export default {
 .text {
   position: absolute;
   color: white;
-  font-size: 8px;
+  font-size: 16px;
 }
 .minlabel, .maxlabel {
   position: absolute;
   color: white;
-  font-size: 8px;
+  font-size: 13px;
 }
 .minlabel {
   right: 102%;
@@ -123,9 +123,9 @@ export default {
 }
 .handle {
   position: absolute;
-  height: 20px;
-  width: 20px;
-  border-radius: 10px;
+  height: 32.5px;
+  width: 32.5px;
+  border-radius: 32.5px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -156,15 +156,15 @@ export default {
   display: flex;
   justify-content: center;
   align-content: center;
-  border-radius: 10px;
+  border-radius: 20px;
 }
 .active.handle {
-  border-radius: 3px;
+  border-radius: 9px;
 }
 .active.handle > .inner {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   opacity: 1;
-  border-radius: 3px;
+  border-radius: 6px;
 }
 </style>

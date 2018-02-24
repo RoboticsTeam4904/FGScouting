@@ -40,7 +40,7 @@ export default {
 .option {
   color: white;
   display: inline-block;
-  font-size: 12px;
+  font-size: 15px;
   border-radius: 3px;
   background-color: rgba(0,0,0,0.1);
   justify-content: center;
@@ -48,6 +48,7 @@ export default {
   padding: 7px;
   margin: 7px;
   margin-left: 0;
+  margin-top: 20px;
   text-align: center;
   cursor: pointer;
   transition: 0.2s ease all;
