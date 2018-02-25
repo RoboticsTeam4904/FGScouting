@@ -52,7 +52,7 @@ export default {
 <style scoped>
 .name {
   color: white;
-  font-size: 18px;
+  font-size: 16px;
 }
 .field {
   margin-bottom: 60px;
@@ -63,7 +63,7 @@ input[type='text'] {
   border-bottom: 2px solid rgba(0,0,0,0.1);
   transition: border 0.2s ease;
   margin-top: 2px;
-  font-size: 16px;
+  font-size: 14px;
   font-family: Arvo;
   margin-bottom: 5px;
   width: 100%;
@@ -107,7 +107,7 @@ input[type='number'] {
   transition: border 0.2s ease;
   margin-top: 2px;
   font-family: Arvo;
-  font-size: 16px;
+  font-size: 14px;
   margin-bottom: 5px;
   width: 100%;
   padding-bottom: 8px;

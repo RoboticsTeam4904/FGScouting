@@ -94,7 +94,7 @@ export default {
   margin-right: 0;
   color: white;
   border-radius: 3px;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
@@ -113,8 +113,8 @@ export default {
   margin-right: 4px;
   position: absolute;
   right: 8px;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   display: flex;
   justify-content: center;
   align-items: center;

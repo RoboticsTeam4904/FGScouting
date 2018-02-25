@@ -40,7 +40,7 @@ export default {
 .option {
   color: white;
   display: inline-block;
-  font-size: 15px;
+  font-size: 13px;
   border-radius: 3px;
   background-color: rgba(0,0,0,0.1);
   justify-content: center;
