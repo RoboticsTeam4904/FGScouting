@@ -210,6 +210,44 @@ func getResponses(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func postResponses(w http.ResponseWriter, r *http.Request){
+	values = r.FormValue("values")
+	if len(r.URL.Query()["token"]) != 1 { // TODO: Could make this a function
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Invalid query parameters",
+		})
+		return
+	}
+	if !verifyAuthString(r.URL.Query()["token"][0]) {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Bad token, user specifier, etc.",
+		})
+		return
+	}
+	readRange := "Responses"
+	resp, err := srv.Spreadsheets.Values.Get(spreadsheetID, readRange).Do()
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Failed to get data from sheets",
+		})
+		return
+	} 
+	writeRange := "Responses!"
+	if len(resp.Values) > 0 {
+		writeRange = writeRange + "A" + strconv.Itoa(len(resp.Values)+1)
+	} else {
+		writeRange = writeRange + "A1"
+	}
+	rb := &sheets,ValueRange{
+		"values": values,
+		"range": writeRange
+	}
+	resp, err := srv.Spreadsheets.Values.Update(spreadsheetId, writeRange, rb).Do()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func getClient(ctx context.Context, config *oauth2.Config) *http.Client {
 	cacheFile, err := tokenCacheFile()
 	if err != nil {
@@ -301,6 +339,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/questions", getQuestions).Methods("GET")
 	router.HandleFunc("/responses", getResponses).Methods("GET")
+	router.HandleFunc("/postResponses", postResponses).Methods("PUT")
 	router.HandleFunc("/token", issueToken).Methods("GET")
 	log.Println("Starting server on *:8001")
 	log.Fatal(http.ListenAndServe(":8001", router))
