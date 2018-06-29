@@ -210,8 +210,20 @@ func getResponses(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func postResponses(w http.ResponseWriter, r *http.Request){
-	values = r.FormValue("values")
+func postResponses(w http.ResponseWriter, r *http.Request) {
+	values := r.FormValue("values")
+	test := []byte(values)
+	var data map[int]interface{}
+	if err := json.Unmarshal(test, &data); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Failed Unmarshalling",
+		})
+		return
+	}
+	arrayValues := []string{}
+	for _, value := range data {
+		arrayValues = append(arrayValues, value.(string))
+	}
 	if len(r.URL.Query()["token"]) != 1 { // TODO: Could make this a function
 		json.NewEncoder(w).Encode(map[string]string{
 			"error": "Invalid query parameters",
@@ -341,6 +353,6 @@ func main() {
 	router.HandleFunc("/responses", getResponses).Methods("GET")
 	router.HandleFunc("/postResponses", postResponses).Methods("PUT")
 	router.HandleFunc("/token", issueToken).Methods("GET")
-	log.Println("Starting server on *:8001")
-	log.Fatal(http.ListenAndServe(":8001", router))
+	log.Println("Starting server on *:8081")
+	log.Fatal(http.ListenAndServe(":8081", router))
 }
