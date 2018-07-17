@@ -37,15 +37,15 @@ export default {
       this.state[item] = value
     },
     submit: function() {
-      // var unfilled = this.$props.questions.filter((question) => {
-      //   return this.state.hasOwnProperty(question[1]) && this.state[question[1]] === null && question[3] === "yes"
-      // })
-      // if (unfilled.length > 0) {
-      //   this.$emit('prompt',['Missing required fields', `Please fill the following required fields: ${unfilled.map(item => item[1]).join(', ')}.`])
-      // }
-      // else {
+      var unfilled = this.$props.questions.filter((question) => {
+        return this.state.hasOwnProperty(question[1]) && this.state[question[1]] === null && question[3] === "yes"
+      })
+      if (unfilled.length > 0) {
+        this.$emit('prompt',['Missing required fields', `Please fill the following required fields: ${unfilled.map(item => item[1]).join(', ')}.`])
+      }
+      else {
         this.$emit('submit',this.state)
-      // }
+      }
     }
   }
 }
