@@ -45,6 +45,7 @@ export default {
       }
       else {
         this.$emit('submit',this.state)
+        this.$emit('prompt',['Form Submitted.'])
       }
     }
   }
