@@ -1,61 +1,61 @@
-// var CACHE = 'network-or-cache';
-// var SHEET = '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY';
-// var CLIENT = ''
+var CACHE = 'network-or-cache';
+var SHEET = '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY';
+var CLIENT = ''
 
-// function colName(n) {
-//     var ordA = 'a'.charCodeAt(0);
-//     var ordZ = 'z'.charCodeAt(0);
-//     var len = ordZ - ordA + 1;
+function colName(n) {
+    var ordA = 'a'.charCodeAt(0);
+    var ordZ = 'z'.charCodeAt(0);
+    var len = ordZ - ordA + 1;
 
-//     var s = "";
-//     while(n >= 0) {
-//         s = String.fromCharCode(n % len + ordA) + s;
-//         n = Math.floor(n / len) - 1;
-//     }
-//     return s;
-// }
+    var s = "";
+    while(n >= 0) {
+        s = String.fromCharCode(n % len + ordA) + s;
+        n = Math.floor(n / len) - 1;
+    }
+    return s;
+}
 
-// self.addEventListener('install', function(evt) {
-//   evt.waitUntil(precache());
-// });
+self.addEventListener('install', function(evt) {
+  evt.waitUntil(precache());
+});
 
-// self.addEventListener('fetch', function(evt) {
-//   evt.respondWith(navigator.onLine ? fromNetwork(evt.request) : fromCache(evt.request))
-// });
+self.addEventListener('fetch', function(evt) {
+  evt.respondWith(navigator.onLine ? fromNetwork(evt.request) : fromCache(evt.request))
+});
 
-// self.addEventListener('sync', function(event) {
-//   CLIENT = event.clientId
-//   if (event.tag == 'dbPush') {
-//     event.waitUntil(dbPush());
-//   }
-//   if (event.tag == 'dbPull') {
-//     event.waitUntil(dbPull());
-//   }
-// });
+self.addEventListener('sync', function(event) {
+  CLIENT = event.clientId
+  if (event.tag == 'dbPush') {
+    event.waitUntil(dbPush());
+  }
+  if (event.tag == 'dbPull') {
+    event.waitUntil(dbPull());
+  }
+});
 
-// function precache() {
-//   return caches.open(CACHE).then(function (cache) {
-//     return cache.addAll([
-//       '/app.js',
-//       '/',
-//       '/static/Arvo.woff2',
-//       '/static/logo.png',
-//       '/static/ionicons.min.css',
-//       '/static/ionicons.eot',
-//       '/static/ionicons.svg',
-//       '/static/ionicons.ttf',
-//       '/static/ionicons.woff'
-//     ]);
-//   });
-// }
+function precache() {
+  return caches.open(CACHE).then(function (cache) {
+    return cache.addAll([
+      '/app.js',
+      '/',
+      '/static/Arvo.woff2',
+      '/static/logo.png',
+      '/static/ionicons.min.css',
+      '/static/ionicons.eot',
+      '/static/ionicons.svg',
+      '/static/ionicons.ttf',
+      '/static/ionicons.woff'
+    ]);
+  });
+}
 
-// function fromNetwork(request) {
-//   return new Promise(function (fulfill, reject) {
-//     fetch(request).then(function (response) {
-//       fulfill(response);
-//     }, reject);
-//   });
-// }
+function fromNetwork(request) {
+  return new Promise(function (fulfill, reject) {
+    fetch(request).then(function (response) {
+      fulfill(response);
+    }, reject);
+  });
+}
 
 // function dbPush() {
 //   return new Promise(function (fulfill, reject) {

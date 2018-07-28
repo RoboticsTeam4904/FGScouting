@@ -75,6 +75,7 @@ export default {
     }
     this.initialize();
     window.addEventListener("online", this.updateConnectionStatus);
+    window.addEventListener("online", this.dataPush)
     window.addEventListener("offline", this.updateConnectionStatus);
     window.addEventListener("keyup", event => {
       if (this.prompting) this.prompting = false;
