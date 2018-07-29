@@ -1,5 +1,5 @@
 var CACHE = 'network-or-cache';
-var SHEET = '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY';
+// var SHEET = '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY';
 var CLIENT = ''
 
 function colName(n) {
@@ -23,15 +23,15 @@ self.addEventListener('fetch', function(evt) {
   evt.respondWith(navigator.onLine ? fromNetwork(evt.request) : fromCache(evt.request))
 });
 
-self.addEventListener('sync', function(event) {
-  CLIENT = event.clientId
-  if (event.tag == 'dbPush') {
-    event.waitUntil(dbPush());
-  }
-  if (event.tag == 'dbPull') {
-    event.waitUntil(dbPull());
-  }
-});
+// self.addEventListener('sync', function(event) {
+//   CLIENT = event.clientId
+//   if (event.tag == 'dbPush') {
+//     event.waitUntil(dbPush());
+//   }
+//   if (event.tag == 'dbPull') {
+//     event.waitUntil(dbPull());
+//   }
+// });
 
 function precache() {
   return caches.open(CACHE).then(function (cache) {

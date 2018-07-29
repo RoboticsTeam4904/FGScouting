@@ -41,6 +41,8 @@ export default {
       promptmessage: [],
       CACHE: 'network-or-cache',
       SHEET: '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY',
+      APIKEY: 'AIzaSyA4HBGkcCkWXXwOkKB0jdPqIaSCOTenR-k',
+      CLIENTID: '692884782115-u4o2n8dco40hjqa18b1agl9492m05l1j.apps.googleusercontent.com',
       CLIENT: ''
     };
   },
@@ -133,9 +135,8 @@ export default {
           function initClient() {
             gapi.client
               .init({
-                apiKey: "AIzaSyA4HBGkcCkWXXwOkKB0jdPqIaSCOTenR-k",
-                clientId:
-                  "692884782115-u4o2n8dco40hjqa18b1agl9492m05l1j.apps.googleusercontent.com",
+                apiKey: this.APIKEY,
+                clientId: this.CLIENTID,
                 scope: "https://www.googleapis.com/auth/spreadsheets",
                 discoveryDocs: [
                   "https://sheets.googleapis.com/$discovery/rest?version=v4"
@@ -266,11 +267,13 @@ export default {
       if (navigator.onLine) {
         var db;
         var request = indexedDB.open("fgscouting", 1);
+        request.sheet_loc = this.SHEET;
         request.onsuccess = ev => {
           db = request.result;
           var tokentx = db.transaction("tokens", "readonly");
           var tokenstore = tokentx.objectStore("tokens");
           var tokenreq = tokenstore.get(1);
+          tokenreq.sheet_loc = request.sheet_loc;
           tokenreq.onsuccess = function() {
             var token = tokenreq.result;
             if (
@@ -281,6 +284,7 @@ export default {
               var tx = db.transaction("responses", "readwrite");
               var store = tx.objectStore("responses");
               var getResponses = store.getAll();
+              getResponses.sheet_loc = tokenreq.sheet_loc;
               getResponses.onsuccess = function() {
                 fetch(
                   `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`
@@ -291,18 +295,12 @@ export default {
                   .then(value => {
                     if (!value.error) {
                       var responses = getResponses.result;
-                      console.log(responses[0])
                       var values = [];
                       for (var i = 0; i < responses.length; i++) {
-                        // var entry = []
-                        // for(var index in responses[i]){
-                        //   entry.push()
-                        // }
                         values.push(Object.values(responses[i]));
                       }
-                      debugger;
                       fetch(
-                        `https://sheets.googleapis.com/v4/spreadsheets/17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY/values/Responses?access_token=${token}`
+                        `https://sheets.googleapis.com/v4/spreadsheets/${getResponses.sheet_loc}/values/Responses?access_token=${token}`
                       )
                         .then(response => {
                           return response.json();
@@ -312,7 +310,7 @@ export default {
                             ? "C" + (result.values.length + 1).toString()
                             : "C1";
                           fetch(
-                            `https://sheets.googleapis.com/v4/spreadsheets/17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY/values/Responses!${a1notation}?valueInputOption=USER_ENTERED&access_token=${token}`,
+                            `https://sheets.googleapis.com/v4/spreadsheets/${getResponses.sheet_loc}/values/Responses!${a1notation}?valueInputOption=USER_ENTERED&access_token=${token}`,
                             {
                               method: "PUT",
                               body: JSON.stringify({
@@ -389,7 +387,7 @@ export default {
               .then(value => {
                 if (!value.error) {
                   fetch(
-                    `https://sheets.googleapis.com/v4/spreadsheets/17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY/values/Questions?access_token=${token}`
+                    `https://sheets.googleapis.com/v4/spreadsheets/${this.SHEET}/values/Questions?access_token=${token}`
                   )
                     .then(response => {
                       return response.json();
