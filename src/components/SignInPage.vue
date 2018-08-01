@@ -2,7 +2,7 @@
   <div class="container">
     <div><img class="logo" src="static/logo.png"/></div>
     <div class="message">
-      2017 Stand Scouting
+      2018 Stand Scouting
     </div>
     <div class="mshadow button" @click="callback">
       Sign in with Google
