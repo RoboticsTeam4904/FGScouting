@@ -43,6 +43,7 @@ export default {
       SHEET: '17HY8J_bdG5IcM9YIUYaZts3OorVd9TvavfLLpSoKkwY',
       APIKEY: 'AIzaSyA4HBGkcCkWXXwOkKB0jdPqIaSCOTenR-k',
       CLIENTID: '692884782115-u4o2n8dco40hjqa18b1agl9492m05l1j.apps.googleusercontent.com',
+      EMAIL_DOMAIN: 'nuevaschool.org',
       CLIENT: ''
     };
   },
@@ -201,7 +202,7 @@ export default {
             .get()
             .getBasicProfile()
             .getEmail()
-            .split("@")[1] === "nuevaschool.org"
+            .split("@")[1] === this.EMAIL_DOMAIN
         ) {
           this.googleUser = this.googleAuthObject.currentUser.get();
           this.applicationStatus = "scouting";
@@ -210,7 +211,7 @@ export default {
           this.googleAuthObject.disconnect();
           this.googleAuthObject.signOut();
           this.signInErrorMessage =
-            'You must be a member of the "nuevaschool.org" domain to use this application.';
+            'You must be a member of the "' + this.EMAIL_DOMAIN + '" domain to use this application.';
           this.isSignedIn = false;
         }
       } else {
