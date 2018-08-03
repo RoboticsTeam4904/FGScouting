@@ -15,6 +15,7 @@
     <ModernSelect @input="(event) => { set(event) }" v-if="data[2]==='PrefilledSelectOne'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(4)" :prefilled="true"></ModernSelect>
     <ModernSelect @input="(event) => { set(event) }" v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(4)" :prefilled="false"></ModernSelect>
     <div @input="(event) => { set(event.target.textContent) }" contenteditable="true" v-if="data[2]==='LongText'"></div>
+    <ModernCounter @input="(event) => { set(event) }" v-if="data[2]==='Counter'" :options="['-1','+1']" :minValue="parseInt(data[5])" :maxValue="parseInt(data[6])"></ModernCounter>
     <ModernSlider @input="(event) => { set(event) }" :initialPosition="parseInt(data[7])" :stepped="data[4]!=0" :steps="parseInt(data[4])" :minValue="parseInt(data[5])" :maxValue="parseInt(data[6])" v-if="data[2]==='Slider'"></ModernSlider>
   </div>
 </template>
@@ -24,10 +25,11 @@
 import ModernSelect from './ModernSelect'
 import ModernRadio from './ModernRadio'
 import ModernSlider from './ModernSlider'
+import ModernCounter from './ModernCounter'
 
 export default {
   name: 'formfield',
-  components: {ModernSelect, ModernRadio, ModernSlider},
+  components: {ModernSelect, ModernRadio, ModernSlider, ModernCounter},
   props: ['data'],
   data() {
     return {
