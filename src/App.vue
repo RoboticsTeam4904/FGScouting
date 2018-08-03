@@ -298,7 +298,9 @@ export default {
                       var responses = getResponses.result;
                       var values = [];
                       for (var i = 0; i < responses.length; i++) {
-                        values.push(Object.values(responses[i]));
+                        var temp = responses[i]
+                        delete temp.id
+                        values.push(Object.values(temp));
                       }
                       fetch(
                         `https://sheets.googleapis.com/v4/spreadsheets/${getResponses.sheet_loc}/values/Responses?access_token=${token}`
