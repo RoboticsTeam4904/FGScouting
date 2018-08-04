@@ -26,9 +26,9 @@ export default {
       this.helper = true;
     }.bind(this))
     return {
-      selected: this.$props.prefilled ? (this.$props.multiple ? [] : this.$props.options[0]) : 'Select one',
+      selected: this.$props.multiple ? [] : (this.$props.prefilled ? this.$props.options[0] : 'Select one'),
       collapsed: false,
-      possible: this.$props.prefilled ? this.$props.options : ['Select one'].concat(this.$props.options)
+      possible: this.$props.options
     }
   },
   methods: {

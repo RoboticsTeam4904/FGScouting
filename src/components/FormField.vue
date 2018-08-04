@@ -63,7 +63,7 @@ export default {
           this.set(component.selected)
         }
         else if (fieldType === "ModernSelect"){
-          component.selected = component.prefilled ? (component.multiple ? [] : component.options[0]) : 'Select one'
+          component.selected = component.multiple ? [] : (component.prefilled ? component.options[0] : 'Select one')
           this.set(component.selected)
         }
         else if (fieldType === "ModernSlider"){
