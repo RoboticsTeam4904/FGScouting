@@ -4,7 +4,7 @@
     <div class="form mshadow static">
       <div class="forminner">
         <div class="heading">Team 4904 Field Scouting</div>
-        <FormField v-for="question in questions" :data="question" :failed="failed.indexOf(question)!=-1" :key="question[1]" @input="(value) => { set(question[1], value) }"></FormField>
+        <FormField v-for="question in questions" :data="question" :failed="failed.indexOf(question)!=-1" ref="fullForm" :key="question[1]" @input="(value) => { set(question[1], value) }"></FormField>
         <div class="center"><div class="submit" @click="submit">Submit</div></div>
       </div>
     </div>
@@ -46,6 +46,10 @@ export default {
       else {
         this.$emit('submit',this.state)
         this.$emit('prompt',['Form Submitted.'])
+        for (var i = 0; i < this.$refs.fullForm.length; i++){
+          var field = this.$refs.fullForm[i]
+          field.clear()
+        }
       }
     }
   }

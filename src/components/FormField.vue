@@ -4,19 +4,19 @@
       {{data[0]}} <span class="required">*</span>
     </div>
     <div v-else class="name">
-      {{data[0]}}
+      {{data[0]}} <!-- <span class="optional">- Optional </span> -->
     </div>
-    <input @input="(event) => { set(event.target.value) }" type="text" v-if="data[2]==='ShortText'"/>
-    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Boolean'" :multiple="false" :options="['No','Yes']"></ModernRadio>
-    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='BooleanReverse'" :multiple="false" :options="['Yes','No']"></ModernRadio>
-    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='Radio'" :multiple="false" :options="data.slice(4)"></ModernRadio>
-    <ModernRadio @input="(event) => { set(event) }" v-if="data[2]==='RadioMultiple'" :multiple="true" :options="data.slice(4)"></ModernRadio>
-    <input @input="(event) => { set(+event.target.value) }" type="number" v-if="data[2]==='Number'"/>
-    <ModernSelect @input="(event) => { set(event) }" v-if="data[2]==='PrefilledSelectOne'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(4)" :prefilled="true"></ModernSelect>
-    <ModernSelect @input="(event) => { set(event) }" v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(4)" :prefilled="false"></ModernSelect>
-    <div @input="(event) => { set(event.target.textContent) }" contenteditable="true" v-if="data[2]==='LongText'"></div>
-    <ModernCounter @input="(event) => { set(event) }" v-if="data[2]==='Counter'" :options="['-1','+1']" :minValue="parseInt(data[5])" :maxValue="parseInt(data[6])"></ModernCounter>
-    <ModernSlider @input="(event) => { set(event) }" :initialPosition="parseInt(data[7])" :stepped="data[4]!=0" :steps="parseInt(data[4])" :minValue="parseInt(data[5])" :maxValue="parseInt(data[6])" v-if="data[2]==='Slider'"></ModernSlider>
+    <input ref="fieldComponent" @input="(event) => { set(event.target.value) }" type="text" v-if="data[2]==='ShortText'"/>
+    <ModernRadio ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='Boolean'" :multiple="false" :options="['No','Yes']"></ModernRadio>
+    <ModernRadio ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='BooleanReverse'" :multiple="false" :options="['Yes','No']"></ModernRadio>
+    <ModernRadio ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='Radio'" :multiple="false" :options="data.slice(4)"></ModernRadio>
+    <ModernRadio ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='RadioMultiple'" :multiple="true" :options="data.slice(4)"></ModernRadio>
+    <input ref="fieldComponent" @input="(event) => { set(+event.target.value) }" type="number" v-if="data[2]==='Number'"/>
+    <ModernSelect ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='PrefilledSelectOne'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(4)" :prefilled="true"></ModernSelect>
+    <ModernSelect ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(4)" :prefilled="false"></ModernSelect>
+    <div ref="fieldComponent" @input="(event) => { set(event.target.textContent) }" contenteditable="true" v-if="data[2]==='LongText'"></div>
+    <ModernCounter ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='Counter'" :options="['-1','+1']" :minValue="parseInt(data[5])" :maxValue="parseInt(data[6])"></ModernCounter>
+    <ModernSlider ref="fieldComponent" @input="(event) => { set(event) }" :initialPosition="parseInt(data[7])" :stepped="data[4]!=0" :steps="parseInt(data[4])" :minValue="parseInt(data[5])" :maxValue="parseInt(data[6])" v-if="data[2]==='Slider'"></ModernSlider>
   </div>
 </template>
 
@@ -46,6 +46,33 @@ export default {
     set: function(value) {
       this.value = value
       this.dispatch()
+    },
+    clear: function() {
+      if ((this.$refs.fieldComponent.tagName == "INPUT") || (this.$refs.fieldComponent.tagName == "DIV")){
+        this.$refs.fieldComponent.value = null
+        this.set(null)
+      }else{
+        var component = this.$refs.fieldComponent
+        var fieldType = component.$options._componentTag
+        if (fieldType === "ModernCounter"){
+          component.value = 0;
+          this.set(component.value)
+        }
+        else if (fieldType === "ModernRadio"){
+          component.selected = component.multiple ? [] : component.options[0]
+          this.set(component.selected)
+        }
+        else if (fieldType === "ModernSelect"){
+          component.selected = component.prefilled ? (component.multiple ? [] : component.options[0]) : 'Select one'
+          this.set(component.selected)
+        }
+        else if (fieldType === "ModernSlider"){
+          component.dragToValue(0)
+        }
+        else {
+          debugger;
+        }
+      }
     }
   }
 }
@@ -155,6 +182,10 @@ input[type="checkbox"] + label:before {
 .required {
   user-select: none;
   color: #ff0000;
+}
+.optional {
+  user-select: none;
+  color: rgba(255,255,255, 0.4);
 }
 input[type="checkbox"]:checked + label:before {
   content: 'Yes';

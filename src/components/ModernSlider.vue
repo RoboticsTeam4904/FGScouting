@@ -68,6 +68,18 @@ export default {
         }
         this.$emit('input', this.value)
       }
+    },
+    dragToValue: function(value) {
+      var width = this.$refs.slider.getBoundingClientRect().width - ((this.magics[2]*2) + (this.magics[0]))
+      var stepLength = width/(this.$props.maxValue - this.$props.minValue)
+      var sliderLeft = stepLength * this.value
+      this.value = value
+      if (this.$props.stepped) {
+        stepLength = width/(this.$props.steps-1)
+        sliderLeft = stepLength * this.value
+        this.$refs.handle.style.left = `${(this.magics[1]+(this.magics[0]/2)) + (stepLength * Math.round(sliderLeft/stepLength))}px`
+      }
+      this.$emit('input', this.value)
     }
   },
   mounted() {

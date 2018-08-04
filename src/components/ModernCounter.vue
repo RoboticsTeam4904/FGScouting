@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'modernradio',
+  name: 'moderncounter',
   props: ['options','minValue','maxValue'],
   data() {
     return {
@@ -53,7 +53,6 @@ export default {
   margin-left: 0;
   margin-right: 0;
   text-align: center;
-  cursor: pointer;
   transition: 0.2s ease all;
   user-select: none;
 }
@@ -62,6 +61,9 @@ export default {
 }
 .option.center {
   width: calc(50% - 14px);
+}
+.option:not(.center) {
+  cursor: pointer;
 }
 .option:hover:not(.center) {
   background-color: rgba(0,0,0,0.3);
