@@ -4,7 +4,7 @@
       {{data[0]}} <span class="required">*</span>
     </div>
     <div v-else class="name">
-      {{data[0]}} <!-- <span class="optional">- Optional </span> -->
+      {{data[0]}} <!--<span class="optional">- Optional </span> -->
     </div>
     <input ref="fieldComponent" @input="(event) => { set(event.target.value) }" type="text" v-if="data[2]==='ShortText'"/>
     <ModernRadio ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='Boolean'" :multiple="false" :options="['No','Yes']"></ModernRadio>
@@ -47,8 +47,28 @@ export default {
       this.value = value
       this.dispatch()
     },
-    clear: function() {
-      if ((this.$refs.fieldComponent.tagName == "INPUT") || (this.$refs.fieldComponent.tagName == "DIV")){
+    reset: function() {
+      // fetch(`https://www.thebluealliance.com/api/v3/event/2018casf/matches`,
+      // {
+      //   method: "GET",
+      //   headers: new Headers({
+      //     'X-TBA-Auth-Key': "ECP12YDXG9GJxMjqVlOlIjeEEaQ2Bjk5nLeA5ieu3aJFWirE93MBFTM8lBsL6EAx"
+      //   })        
+      // }).then(response => {
+      //   return response.json();
+      // }).then(result => {
+      //   var newResult = result.filter(obj => {
+      //     return obj.comp_level === "qm"
+      //   })
+      //   var test = newResult.find(function (obj) { return obj.match_number === 3; })
+      //   console.log(test.alliances.blue.team_keys[0].substring(3))
+      // })
+      if (this.data[1] == "name") {}
+      else if (this.data[1] == "matchNumber"){
+        var newValue = parseInt(this.$refs.fieldComponent.value) + 1;
+        this.$refs.fieldComponent.value = newValue;
+        this.set(newValue);
+      } else if ((this.$refs.fieldComponent.tagName == "INPUT") || (this.$refs.fieldComponent.tagName == "DIV")){
         this.$refs.fieldComponent.value = null
         this.set(null)
       }else{

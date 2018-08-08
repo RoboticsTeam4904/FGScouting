@@ -44,11 +44,13 @@ export default {
         this.$emit('prompt',['Missing required fields', `Please fill the following required fields: ${unfilled.map(item => item[1]).join(', ')}.`])
       }
       else {
+        var d = new Date()
+        this.state.date = d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + " " + d.toString().substring(16, 24)
         this.$emit('submit',this.state)
         this.$emit('prompt',['Form Submitted.'])
         for (var i = 0; i < this.$refs.fullForm.length; i++){
           var field = this.$refs.fullForm[i]
-          field.clear()
+          field.reset()
         }
       }
     }

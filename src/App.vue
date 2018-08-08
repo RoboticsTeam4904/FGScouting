@@ -300,7 +300,11 @@ export default {
                       for (var i = 0; i < responses.length; i++) {
                         var temp = responses[i]
                         delete temp.id
-                        values.push(Object.values(temp));
+                        var arr = Object.values(temp)// From https://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
+                        var element = arr[arr.length-1];
+                        arr.splice(arr.length-1, 1);
+                        arr.splice(0, 0, element);
+                        values.push(arr);
                       }
                       fetch(
                         `https://sheets.googleapis.com/v4/spreadsheets/${getResponses.sheet_loc}/values/Responses?access_token=${token}`
@@ -310,8 +314,8 @@ export default {
                         })
                         .then(result => {
                           var a1notation = result.values
-                            ? "C" + (result.values.length + 1).toString()
-                            : "C1";
+                            ? "A" + (result.values.length + 1).toString()
+                            : "A1";
                           fetch(
                             `https://sheets.googleapis.com/v4/spreadsheets/${getResponses.sheet_loc}/values/Responses!${a1notation}?valueInputOption=USER_ENTERED&access_token=${token}`,
                             {
