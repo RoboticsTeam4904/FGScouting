@@ -45,7 +45,7 @@ export default {
       }
       else {
         var d = new Date()
-        this.state.date = d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + " " + d.toString().substring(16, 24)
+        this.state.date = d.getMonth() + 1 + "/" + d.getDate() + "/" + d.getFullYear() + " " + d.toString().substring(16, 24)
         this.$emit('submit',this.state)
         this.$emit('prompt',['Form Submitted.'])
         for (var i = 0; i < this.$refs.fullForm.length; i++){
