@@ -84,7 +84,11 @@ export default {
         }
         else if (fieldType === "ModernSelect"){
           component.selected = component.multiple ? [] : (component.prefilled ? component.options[0] : 'Select one')
-          this.set(component.selected)
+          if(component.prefilled){
+            this.set(component.selected)
+          }else{
+            this.set(null)
+          }
         }
         else if (fieldType === "ModernSlider"){
           component.dragToValue(0)
