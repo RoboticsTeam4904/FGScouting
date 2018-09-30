@@ -11,7 +11,7 @@ export default {
   props: ['options', 'multiple'],
   data() {
     return {
-      selected: this.$props.multiple ? [] : this.$props.options[0]
+      selected: this.$props.multiple ? [] : ''
     }
   },
   methods: {

@@ -11,7 +11,7 @@
     <ModernRadio ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='BooleanReverse'" :multiple="false" :options="['Yes','No']"></ModernRadio>
     <ModernRadio ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='Radio'" :multiple="false" :options="data.slice(4)"></ModernRadio>
     <ModernRadio ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='RadioMultiple'" :multiple="true" :options="data.slice(4)"></ModernRadio>
-    <input ref="fieldComponent" @input="(event) => { set(+event.target.value) }" type="number" v-if="data[2]==='Number'"/>
+    <input ref="fieldComponent" @input="(event) => { set(event.target.value) }" type="number" v-if="data[2]==='Number'"/>
     <ModernSelect ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='PrefilledSelectOne'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(4)" :prefilled="true"></ModernSelect>
     <ModernSelect ref="fieldComponent" @input="(event) => { set(event) }" v-if="data[2]==='SelectOne' || data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :multiple="data[2]==='SelectMultiple' || data[2]==='DuplicatingSelectMultiple'" :allowDuplicates="data[2]==='DuplicatingSelectMultiple'" :options="data.slice(4)" :prefilled="false"></ModernSelect>
     <div ref="fieldComponent" @input="(event) => { set(event.target.textContent) }" contenteditable="true" v-if="data[2]==='LongText'"></div>
@@ -79,12 +79,16 @@ export default {
           this.set(component.value)
         }
         else if (fieldType === "ModernRadio"){
-          component.selected = component.multiple ? [] : component.options[0]
+          component.selected = component.multiple ? [] : ''
           this.set(component.selected)
         }
         else if (fieldType === "ModernSelect"){
           component.selected = component.multiple ? [] : (component.prefilled ? component.options[0] : 'Select one')
-          this.set(component.selected)
+          if(component.prefilled){
+            this.set(component.selected)
+          }else{
+            this.set(null)
+          }
         }
         else if (fieldType === "ModernSlider"){
           component.dragToValue(0)
